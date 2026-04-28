@@ -20,6 +20,15 @@ import BatmanProblem from "./pages/BatmanProblem";
 import RollerCoaster from "./pages/RollerCoaster";
 import SatelliteCollision from "./pages/SatelliteCollision";
 import FinalBoss from "./pages/FinalBoss";
+import MidtermPrep from "./pages/MidtermPrep";
+import RotationalKinematics from "./pages/RotationalKinematics";
+import TorquePage from "./pages/Torque";
+import RotationalEnergy from "./pages/RotationalEnergy";
+import AngularMomentum from "./pages/AngularMomentum";
+import SimpleHarmonicMotion from "./pages/SimpleHarmonicMotion";
+import WavesMusic from "./pages/WavesMusic";
+import Fluids from "./pages/Fluids";
+import MockExam from "./pages/MockExam";
 
 // Alias Tension as CoupledSystems for routing
 const CoupledSystems = Tension;
@@ -44,6 +53,16 @@ function Router() {
       <Route path={"/roller-coaster"} component={RollerCoaster} />
       <Route path={"/satellite-collision"} component={SatelliteCollision} />
       <Route path={"/final-boss"} component={FinalBoss} />
+      {/* PHY 131 Midterm Prep modules */}
+      <Route path={"/midterm-prep"} component={MidtermPrep} />
+      <Route path={"/rotational-kinematics"} component={RotationalKinematics} />
+      <Route path={"/torque"} component={TorquePage} />
+      <Route path={"/rotational-energy"} component={RotationalEnergy} />
+      <Route path={"/angular-momentum"} component={AngularMomentum} />
+      <Route path={"/shm"} component={SimpleHarmonicMotion} />
+      <Route path={"/waves-music"} component={WavesMusic} />
+      <Route path={"/fluids"} component={Fluids} />
+      <Route path={"/mock-exam"} component={MockExam} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

@@ -377,6 +377,62 @@ export default function Home() {
         </div>
       </section>
 
+      {/* PHY 131 Midterm Prep */}
+      <section className="py-20 bg-gradient-to-br from-cyan-50 via-fuchsia-50 to-amber-50 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900">
+        <div className="container">
+          <div className="text-center mb-12">
+            <span className="inline-block bg-purple-600 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wider mb-4">
+              EXAM PREP
+            </span>
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              PHY 131 Midterm Prep
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              7 topics covered on your cumulative exam: rotational mechanics, oscillations, waves
+              &amp; sound, fluids. 10-day study schedule, every PDF problem worked through, plus a
+              timed mock exam.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-7 gap-2 mb-10 max-w-5xl mx-auto">
+            {[
+              { day: 1, label: "Rot. Kin.", color: "#06b6d4", route: "/rotational-kinematics" },
+              { day: 2, label: "Torque", color: "#c026d3", route: "/torque" },
+              { day: 3, label: "Rot. E", color: "#ef4444", route: "/rotational-energy" },
+              { day: 4, label: "Ang. Mom.", color: "#3b82f6", route: "/angular-momentum" },
+              { day: 5, label: "SHM", color: "#f59e0b", route: "/shm" },
+              { day: 6, label: "Waves", color: "#10b981", route: "/waves-music" },
+              { day: 7, label: "Fluids", color: "#0ea5e9", route: "/fluids" },
+            ].map((d) => (
+              <Link key={d.day} href={d.route}>
+                <Card
+                  className="p-3 text-center hover:shadow-md transition-shadow cursor-pointer h-full"
+                  style={{ borderTop: `3px solid ${d.color}` }}
+                >
+                  <div
+                    className="text-2xl font-bold mb-1"
+                    style={{ color: d.color }}
+                  >
+                    D{d.day}
+                  </div>
+                  <div className="text-xs text-gray-600 dark:text-gray-300 font-semibold">
+                    {d.label}
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link href="/midterm-prep">
+              <Button className="bg-gradient-to-r from-cyan-600 via-fuchsia-600 to-amber-500 hover:from-cyan-700 hover:via-fuchsia-700 hover:to-amber-600 text-white px-8 py-6 text-lg rounded-lg flex items-center gap-2 mx-auto">
+                Open Study Plan <ChevronRight className="w-5 h-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Exercise Bank & Resources */}
       <section className="py-20 bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-800 dark:to-slate-900">
         <div className="container">

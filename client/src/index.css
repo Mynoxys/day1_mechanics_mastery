@@ -49,6 +49,15 @@
   --color-friction: #991b1b;
   --color-normal: #047857;
   --color-net-force: #7c3aed;
+
+  /* Midterm Module Colors - per-topic accents */
+  --color-rotational: #06b6d4;
+  --color-torque: #c026d3;
+  --color-energy-rot: #ef4444;
+  --color-angular: #3b82f6;
+  --color-shm: #f59e0b;
+  --color-wave: #10b981;
+  --color-fluid: #0ea5e9;
   
   /* Primary Colors */
   --primary: #1e40af;
@@ -206,22 +215,31 @@
   .force-gravity {
     @apply stroke-[#1e40af] fill-[#1e40af];
   }
-  
+
   .force-tension {
     @apply stroke-[#ea580c] fill-[#ea580c];
   }
-  
+
   .force-friction {
     @apply stroke-[#991b1b] fill-[#991b1b];
   }
-  
+
   .force-normal {
     @apply stroke-[#047857] fill-[#047857];
   }
-  
+
   .force-net {
     @apply stroke-[#7c3aed] fill-[#7c3aed];
   }
+
+  /* Midterm Topic Visualization Utilities */
+  .vec-rotational { @apply stroke-[#06b6d4] fill-[#06b6d4]; }
+  .vec-torque     { @apply stroke-[#c026d3] fill-[#c026d3]; }
+  .vec-energy-rot { @apply stroke-[#ef4444] fill-[#ef4444]; }
+  .vec-angular    { @apply stroke-[#3b82f6] fill-[#3b82f6]; }
+  .vec-shm        { @apply stroke-[#f59e0b] fill-[#f59e0b]; }
+  .vec-wave       { @apply stroke-[#10b981] fill-[#10b981]; }
+  .vec-fluid      { @apply stroke-[#0ea5e9] fill-[#0ea5e9]; }
   
   /* Section Styling */
   .section-header {

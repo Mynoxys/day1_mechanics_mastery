@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Router as WouterRouter, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -70,8 +70,13 @@ import ScheduleSettings from "./pages/cse114/ScheduleSettings";
 // Alias Tension as CoupledSystems for routing
 const CoupledSystems = Tension;
 
+// Vite's BASE_URL is "/" in dev and "/day1_mechanics_mastery/" on GitHub Pages.
+// wouter wants the base WITHOUT a trailing slash ("" at root), so strip it.
+const ROUTER_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 function Router() {
   return (
+    <WouterRouter base={ROUTER_BASE}>
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/inclined-planes"} component={InclinedPlanes} />
@@ -143,6 +148,7 @@ function Router() {
       {/* Final fallback route */}
       <Route component={NotFound} />
     </Switch>
+    </WouterRouter>
   );
 }
 

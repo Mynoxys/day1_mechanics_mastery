@@ -153,6 +153,9 @@ function vitePluginManusDebugCollector(): Plugin {
 const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
 
 export default defineConfig({
+  // Base public path. Defaults to "/" for local dev and the Express prod server.
+  // GitHub Pages (project site) sets VITE_BASE="/day1_mechanics_mastery/" in CI.
+  base: process.env.VITE_BASE ?? "/",
   plugins,
   resolve: {
     alias: {

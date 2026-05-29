@@ -4,7 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
-import { WorkedExample } from "@/components/midterm/WorkedExample";
+import { WorkedExample, Eq, Why } from "@/components/midterm/WorkedExample";
 import { PracticeProblem } from "@/components/midterm/PracticeProblem";
 import { FormulaBlock } from "@/components/midterm/FormulaBlock";
 
@@ -262,29 +262,61 @@ export default function AngularMomentum() {
               name="Angular momentum (rigid body)"
               formula={<div>L = I ω</div>}
               variables={[
-                { symbol: "I", meaning: "moment of inertia about rotation axis", units: "kg·m²" },
-                { symbol: "ω", meaning: "angular velocity", units: "rad/s" },
+                {
+                  symbol: "I",
+                  meaning:
+                    "moment of inertia about the rotation axis — the rotational version of mass. See the rotational-energy page's 'How to pick I' for shape-by-shape reasoning",
+                  units: "kg·m²",
+                },
+                {
+                  symbol: "ω",
+                  meaning: "angular velocity (how fast it's spinning)",
+                  units: "rad/s",
+                },
               ]}
-              whenToUse="When the object is a rigid body rotating about a fixed axis."
+              whenToUse="The rotational analog of momentum p = mv. For a rigid body spinning about a fixed axis, L tells you 'how much rotational motion is locked into the body' — and it's conserved unless external torques act. The squared-shape behavior of I means a body with mass concentrated far from the axis (like a hoop) has more L at the same ω than a compact one (like a sphere)."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Angular momentum (point mass)"
               formula={<div>L = m·v·r⊥ = m·v·r·sin θ</div>}
               variables={[
-                { symbol: "m", meaning: "mass", units: "kg" },
-                { symbol: "v", meaning: "linear speed", units: "m/s" },
-                { symbol: "r", meaning: "distance from axis to mass", units: "m" },
-                { symbol: "θ", meaning: "angle between r-vector and v-vector" },
+                {
+                  symbol: "m",
+                  meaning: "mass of the moving object",
+                  units: "kg",
+                },
+                {
+                  symbol: "v",
+                  meaning: "the object's linear speed",
+                  units: "m/s",
+                },
+                {
+                  symbol: "r",
+                  meaning:
+                    "distance from the chosen pivot to the object at the moment in question",
+                  units: "m",
+                },
+                {
+                  symbol: "θ",
+                  meaning:
+                    "angle between r and v. Motion straight at or away from the pivot has θ = 0 → L = 0; motion perpendicular to r is fully effective",
+                },
+                {
+                  symbol: "r⊥",
+                  meaning:
+                    "shortcut: perpendicular distance from the pivot to the object's line of motion (just r·sin θ packaged for convenience)",
+                  units: "m",
+                },
               ]}
-              whenToUse="A flying object passing near (or hitting) a fixed pivot — e.g., pizza striking a door at the hinge."
+              whenToUse="A flying object can have angular momentum about a pivot it isn't attached to — that's how a thrown brick can transfer spin to a hinged door it hits. Use this when you need L of an object that isn't rigidly attached to the rotation axis: just before a collision, on a trajectory near a pivot, etc. After the collision, the object joins the rigid body and you switch to L = Iω."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Conservation of L"
               formula={<div>L_initial = L_final (if Στ_external = 0)</div>}
               variables={[]}
-              whenToUse="No external torques during the event of interest. Cylinder-on-cylinder drops, pizza-on-door collisions, ice skater spins."
+              whenToUse="The angular version of momentum conservation. If no external torque acts during the event of interest, the system's total L stays the same — even if I changes (skater pulling arms in spins faster) or the system rearranges itself (object hits door, pizza-and-door spin together). Pick the pivot first; check whether the external forces (gravity, hinge reaction) produce zero torque about THAT pivot. Hinge forces and gravity at the pivot point both pass through the pivot, so they have no torque — that's the trick that makes 'pizza hits hinged door' an L-conservation problem."
             />
             <FormulaBlock
               accentColor={ACCENT}
@@ -296,9 +328,14 @@ export default function AngularMomentum() {
                 </div>
               }
               variables={[
-                { symbol: "r", meaning: "distance from axis to attached point mass", units: "m" },
+                {
+                  symbol: "r",
+                  meaning:
+                    "distance from the rotation axis to the attached point mass",
+                  units: "m",
+                },
               ]}
-              whenToUse="A point mass stuck to a rotating body — like the pizza embedded in the door at 0.8 m from the hinge."
+              whenToUse="Moments of inertia just add (about the same axis). When something sticks to a rotating body — pizza embedded in a door, wad of clay landing on a turntable, monkey grabbing a rod — compute the new I_total = I_original + m·r² and use that for the post-event motion. Critical that all I terms are about the SAME axis."
             />
           </div>
         </section>
@@ -318,38 +355,87 @@ export default function AngularMomentum() {
             }
             steps={[
               {
-                heading: "Identify what's conserved",
+                heading: "Decide what's conserved during the collision",
                 body: (
-                  <p>
-                    The drop is brief and the floor exerts no horizontal torque about the spin
-                    axis. So <strong>L is conserved</strong>. Note: KE is NOT conserved (this is an
-                    inelastic collision).
-                  </p>
+                  <>
+                    <Why>
+                      Three quantities could be candidates for conservation: linear momentum,
+                      kinetic energy, and angular momentum. Let's filter them:
+                    </Why>
+                    <Why>
+                      <strong>Linear momentum?</strong> Not for the dropped disc — gravity is
+                      acting on it during the fall. But for our axis of interest (the spin
+                      axis), gravity is parallel to the axis, so it produces no torque about
+                      that axis. The friction-stick interaction between the two cylinders is
+                      internal to the system, so it produces no <em>external</em> torque
+                      about the axis either. Therefore <strong>angular momentum about the
+                      spin axis is conserved</strong>.
+                    </Why>
+                    <Why>
+                      <strong>Kinetic energy?</strong> No. The two surfaces grip onto each
+                      other and end up rotating together — this is an <em>inelastic</em>
+                      angular collision. Energy is lost to friction during the brief
+                      stick-slip-stick transition.
+                    </Why>
+                  </>
                 ),
               },
               {
-                heading: "Initial L (only hollow is spinning)",
+                heading: "Compute L_initial — only the hollow cylinder is spinning",
                 body: (
-                  <p>
-                    I_hollow = mR², so L_i = mR²·ω_i = 1.5·R²·20 (in rpm·R² units — keep the units symbolic for now).
-                  </p>
+                  <>
+                    <Why>
+                      Before the drop, the solid disc is sitting still in your hand (no spin),
+                      so its angular momentum is zero. All of L_initial comes from the hollow
+                      cylinder.
+                    </Why>
+                    <Why>
+                      For a hollow cylinder (thin-walled tube) about its central axis, the
+                      moment of inertia is I_hollow = m·R². So:
+                    </Why>
+                    <Eq>L_i = I_hollow · ω_i = (m R²) · ω_i = (1.5 R²) · ω_i</Eq>
+                    <Why>
+                      We'll keep R² symbolic — it'll cancel later.
+                    </Why>
+                  </>
                 ),
               },
               {
-                heading: "Final I (both spinning together)",
+                heading: "Compute the new I_total once the disc lands and sticks",
                 body: (
-                  <p>
-                    I_solid = ½MR². I_total = mR² + ½MR² = R²·(m + M/2) = R²·(1.5 + 1) = 2.5·R²
-                  </p>
+                  <>
+                    <Why>
+                      After the drop, the solid disc is now spinning together with the hollow
+                      cylinder at the same ω_f. The combined moment of inertia is the sum of
+                      both about the common axis.
+                    </Why>
+                    <Why>
+                      A solid disc about its center has I_solid = ½ M R². So:
+                    </Why>
+                    <Eq>I_total = I_hollow + I_solid = m·R² + ½·M·R² = R² (m + M/2)</Eq>
+                    <Eq>I_total = R² · (1.5 + 2/2) = R² · (1.5 + 1) = 2.5 · R²</Eq>
+                  </>
                 ),
               },
               {
-                heading: "Apply L_i = L_f and cancel R²",
+                heading: "Apply L_initial = L_final and solve for ω_f",
                 body: (
-                  <div className="space-y-1">
-                    <p>1.5·R²·ω_i = 2.5·R²·ω_f</p>
-                    <p>ω_f = (1.5/2.5)·ω_i = 0.6·20</p>
-                  </div>
+                  <>
+                    <Why>
+                      Set the angular momentum before equal to the angular momentum after:
+                    </Why>
+                    <Eq>L_i = L_f   →   1.5 R² · ω_i = 2.5 R² · ω_f</Eq>
+                    <Why>
+                      R² appears on both sides and cancels — meaning the answer doesn't
+                      depend on the cylinders' size, only their masses and shapes.
+                    </Why>
+                    <Eq>ω_f = (1.5 / 2.5) · ω_i = 0.6 · ω_i = 0.6 · 20 = 12 rpm</Eq>
+                    <Why>
+                      The hollow cylinder slowed from 20 rpm to 12 rpm because it had to
+                      "share" its spin with the disc that was at rest. The angular momentum
+                      it gives up exactly equals the angular momentum the disc gains.
+                    </Why>
+                  </>
                 ),
                 result: { label: "ω_f", value: "= 12 rpm", color: "blue" },
               },
@@ -389,13 +475,40 @@ export default function AngularMomentum() {
                 label: "(a)",
                 question: "Angular velocity ω of the pizza-stained door just after the collision",
                 solutionSteps: (
-                  <div className="space-y-1">
-                    <p>Pizza moves perpendicular to door at impact. L_pizza about the hinge = m·v·r:</p>
-                    <p>L = 0.3 · 2 · 0.8 = 0.48 kg·m²/s</p>
-                    <p>I_door (rod about end) = ⅓ML² = ⅓·1.5·(1.0)² = 0.5 kg·m²</p>
-                    <p>I_pizza_now (point at r=0.8) = m·r² = 0.3·0.64 = 0.192 kg·m²</p>
-                    <p>I_total = 0.5 + 0.192 = 0.692 kg·m²</p>
-                    <p>L_initial = L_final → 0.48 = 0.692·ω</p>
+                  <div className="space-y-2">
+                    <p>
+                      <strong>Pivot choice and conserved quantity.</strong> The hinge can
+                      exert any force on the door, but those forces act <em>at</em> the
+                      hinge, so they produce zero torque about it. Therefore angular
+                      momentum about the hinge is conserved during the brief sticky
+                      collision. (Linear momentum is not conserved, because the hinge can
+                      exert horizontal force on the system.)
+                    </p>
+                    <p>
+                      <strong>L_initial: only the pizza is moving.</strong> The pizza is a
+                      "point mass" flying through space toward the door. For a point mass
+                      with velocity v, angular momentum about a chosen axis is L = m·v·r⊥,
+                      where r⊥ is the perpendicular distance from the axis to the line of
+                      motion. The pizza flies perpendicular to the door and strikes at 0.8 m
+                      from the hinge, so r⊥ = 0.8 m:
+                    </p>
+                    <Eq>L_initial = m_pizza · v · r⊥ = 0.3 · 2 · 0.8 = 0.48 kg·m²/s</Eq>
+                    <p>
+                      <strong>I_final: door + stuck pizza both rotate together.</strong>
+                      The door is a uniform rod rotating about <strong>one end</strong> (the
+                      hinge), so its moment of inertia is I_door = ⅓ M L² (NOT ¹/₁₂ M L²,
+                      which is for rotation about the center):
+                    </p>
+                    <Eq>I_door = ⅓ · M_door · L² = ⅓ · 1.5 · (1.0)² = 0.500 kg·m²</Eq>
+                    <p>
+                      The pizza, stuck at r = 0.8 m, becomes a point mass attached to the
+                      rotating door. A point mass at radius r contributes I = m·r²:
+                    </p>
+                    <Eq>I_pizza = m_pizza · r² = 0.3 · (0.8)² = 0.3 · 0.64 = 0.192 kg·m²</Eq>
+                    <Eq>I_total = I_door + I_pizza = 0.500 + 0.192 = 0.692 kg·m²</Eq>
+                    <p><strong>Apply conservation:</strong></p>
+                    <Eq>L_initial = L_final   →   0.48 = I_total · ω = 0.692 · ω</Eq>
+                    <Eq>ω = 0.48 / 0.692 ≈ 0.694 rad/s</Eq>
                   </div>
                 ),
                 answer: { value: "ω ≈ 0.694", unit: "rad/s" },
@@ -404,9 +517,21 @@ export default function AngularMomentum() {
                 label: "(b)",
                 question: "Time for door to rotate ¼ turn (no friction so ω is constant)",
                 solutionSteps: (
-                  <div className="space-y-1">
-                    <p>θ = π/2 rad, ω = 0.694 rad/s, constant.</p>
-                    <p>t = θ/ω = (π/2) / 0.694 = 1.571 / 0.694</p>
+                  <div className="space-y-2">
+                    <p>
+                      <strong>After the collision</strong>, with a frictionless hinge and no
+                      other torque acting (the hinge force has zero lever arm), the door
+                      rotates at constant ω. So this is just θ = ω·t.
+                    </p>
+                    <p>
+                      A quarter turn is 90° = π/2 rad ≈ 1.571 rad. Solve for t:
+                    </p>
+                    <Eq>t = θ / ω = (π/2) / 0.694 = 1.571 / 0.694 ≈ 2.26 s</Eq>
+                    <p>
+                      Just over 2 seconds for the door to swing through 90° — slow because
+                      the pizza barely had any angular momentum to give the relatively
+                      heavy door.
+                    </p>
                   </div>
                 ),
                 answer: { value: "t ≈ 2.26", unit: "s" },

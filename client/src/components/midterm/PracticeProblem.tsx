@@ -56,12 +56,12 @@ export function PracticeProblem({
               </span>
             </AccordionTrigger>
             <AccordionContent>
-              <div className="bg-gray-50 dark:bg-slate-600 p-4 rounded-lg space-y-2 font-mono text-sm text-gray-700 dark:text-gray-200">
+              <div className="bg-gray-50 dark:bg-slate-600 p-4 rounded-lg space-y-3 text-sm leading-relaxed text-gray-700 dark:text-gray-200">
                 {part.solutionSteps}
-                <div className="pt-2 mt-2 border-t border-gray-300 dark:border-slate-500">
+                <div className="pt-3 mt-3 border-t border-gray-300 dark:border-slate-500">
                   <span className="font-bold">Answer: </span>
                   <span
-                    className="font-bold"
+                    className="font-bold font-mono"
                     style={{ color: accentColor }}
                   >
                     {part.answer.value}

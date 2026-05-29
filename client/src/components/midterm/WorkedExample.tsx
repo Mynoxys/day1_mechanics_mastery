@@ -7,6 +7,22 @@ export interface WorkedStep {
   result?: { label: string; value: string; color?: "amber" | "blue" | "purple" | "green" | "orange" | "red" | "cyan" };
 }
 
+export function Eq({ children }: { children: ReactNode }) {
+  return (
+    <div className="my-2 px-3 py-2 bg-white dark:bg-slate-700 border-l-2 border-gray-400 dark:border-slate-400 rounded font-mono text-[13px] text-gray-800 dark:text-gray-100">
+      {children}
+    </div>
+  );
+}
+
+export function Why({ children }: { children: ReactNode }) {
+  return (
+    <p className="text-gray-700 dark:text-gray-200 leading-relaxed">
+      {children}
+    </p>
+  );
+}
+
 interface WorkedExampleProps {
   title: string;
   problemStatement: ReactNode;
@@ -49,17 +65,17 @@ export function WorkedExample({
 
         <div className="space-y-4">
           <h4 className="text-xl font-bold text-gray-900 dark:text-white">Step-by-Step Solution</h4>
-          <div className="bg-gray-50 dark:bg-slate-600 p-6 rounded-lg space-y-3 font-mono text-sm">
+          <div className="bg-gray-50 dark:bg-slate-600 p-6 rounded-lg space-y-5 text-sm">
             {steps.map((step, i) => (
-              <div key={i} className={i > 0 ? "pt-2" : undefined}>
-                <p className="font-bold text-gray-900 dark:text-white">
+              <div key={i} className={i > 0 ? "pt-3 border-t border-gray-200 dark:border-slate-500" : undefined}>
+                <p className="font-bold text-base text-gray-900 dark:text-white mb-2">
                   Step {i + 1}: {step.heading}
                 </p>
-                <div className="text-gray-700 dark:text-gray-200">{step.body}</div>
+                <div className="text-gray-700 dark:text-gray-200 leading-relaxed space-y-2">{step.body}</div>
                 {step.result && (
-                  <p className="mt-1">
-                    <strong>{step.result.label}:</strong>{" "}
-                    <span className={colorClasses[step.result.color ?? "purple"] + " font-bold"}>
+                  <p className="mt-3 pt-2 border-t border-dashed border-gray-300 dark:border-slate-500">
+                    <strong className="text-gray-900 dark:text-white">{step.result.label}:</strong>{" "}
+                    <span className={colorClasses[step.result.color ?? "purple"] + " font-bold font-mono"}>
                       {step.result.value}
                     </span>
                   </p>

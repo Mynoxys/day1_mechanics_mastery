@@ -4,7 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
-import { WorkedExample } from "@/components/midterm/WorkedExample";
+import { WorkedExample, Eq, Why } from "@/components/midterm/WorkedExample";
 import { PracticeProblem } from "@/components/midterm/PracticeProblem";
 import { FormulaBlock } from "@/components/midterm/FormulaBlock";
 
@@ -290,10 +290,19 @@ export default function RotationalEnergy() {
               name="Rotational Kinetic Energy"
               formula={<div>KE_rot = ½ I ω²</div>}
               variables={[
-                { symbol: "I", meaning: "moment of inertia about rotation axis", units: "kg·m²" },
-                { symbol: "ω", meaning: "angular velocity", units: "rad/s" },
+                {
+                  symbol: "I",
+                  meaning:
+                    "moment of inertia about the rotation axis — the rotational version of mass. Bigger I = more energy stored at the same spin rate. See the 'How to pick I' section above to reason about it",
+                  units: "kg·m²",
+                },
+                {
+                  symbol: "ω",
+                  meaning: "angular velocity — how fast the object is spinning",
+                  units: "rad/s",
+                },
               ]}
-              whenToUse="Energy stored purely in spin (e.g., a wheel about its axle, a turntable)."
+              whenToUse="The rotational analog of ½mv². Use whenever something is spinning but not translating (a wheel about its fixed axle, a turntable, a flywheel). Note the squared ω: doubling the spin rate quadruples the stored energy — that's why flywheels store so much energy at high rpm."
             />
             <FormulaBlock
               accentColor={ACCENT}
@@ -305,20 +314,38 @@ export default function RotationalEnergy() {
                 </div>
               }
               variables={[
-                { symbol: "v", meaning: "linear speed of center of mass", units: "m/s" },
-                { symbol: "ω = v/R", meaning: "angular speed (rolling constraint)", units: "rad/s" },
-                { symbol: "R", meaning: "radius of the rolling object", units: "m" },
+                {
+                  symbol: "v",
+                  meaning:
+                    "linear speed of the center of mass (how fast the whole body is traveling)",
+                  units: "m/s",
+                },
+                {
+                  symbol: "ω = v/R",
+                  meaning:
+                    "angular speed, locked to v by the rolling-without-slipping condition (the contact point is momentarily at rest, so the rim must move at exactly v)",
+                  units: "rad/s",
+                },
+                {
+                  symbol: "R",
+                  meaning: "radius of the rolling object",
+                  units: "m",
+                },
               ]}
-              whenToUse="Anything rolling without slipping: balls down ramps, wheels, yoyo unrolling at the bottom."
+              whenToUse="A rolling object has BOTH translational KE (its CM is moving) AND rotational KE (it's spinning). The second form factors out ½mv² and packages the rotational fraction as 1 + I/(mR²) — that ratio determines how the energy splits. For a hoop (I = MR²), exactly half the energy is rotational. For a solid sphere (I = ²/₅MR²), only ²/₇ is rotational and ⁵/₇ is translational. That's why a solid sphere wins the rolling race down a ramp."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Energy conservation w/ rolling"
               formula={<div>mgh = ½mv²(1 + I/(mR²))</div>}
               variables={[
-                { symbol: "h", meaning: "height dropped (or risen)", units: "m" },
+                {
+                  symbol: "h",
+                  meaning: "height the object's center of mass dropped (or rose)",
+                  units: "m",
+                },
               ]}
-              whenToUse="Rolling object on a frictionless ramp / drop / pulley."
+              whenToUse="A rolling object on a ramp converts its gravitational PE entirely into kinetic energy (assuming no slipping — friction does no work because the contact point is momentarily at rest). All you need is: known h, known I/(mR²) for the shape. Solve for v. The result depends only on the shape and h — NOT on mass or radius. That's why a marble and a bowling ball reach the same speed at the bottom of identical ramps, but a ring is slower than either."
             />
             <FormulaBlock
               accentColor={ACCENT}
@@ -330,12 +357,200 @@ export default function RotationalEnergy() {
                 </div>
               }
               variables={[
-                { symbol: "M", meaning: "pulley mass (treated as solid cylinder)", units: "kg" },
-                { symbol: "v", meaning: "speed of the rope (= linear speed of attached masses)", units: "m/s" },
+                {
+                  symbol: "M",
+                  meaning:
+                    "pulley mass (treat it as a solid cylinder — I = ½MR²)",
+                  units: "kg",
+                },
+                {
+                  symbol: "v",
+                  meaning:
+                    "speed of the rope, which equals the linear speed of any masses attached to the rope",
+                  units: "m/s",
+                },
               ]}
-              whenToUse="Atwood / well-bucket / paper-unspooling: massive pulley adds (M/4)v² to the KE budget. R always cancels."
+              whenToUse="Atwood machines, well-bucket-with-pulley, paper-unspooling — anytime a pulley has nontrivial mass it stores its own KE as it spins. The neat result: when you write down KE for the whole system, the R²s cancel between I = ½MR² and ω² = (v/R)², leaving just ¼Mv². So a massive pulley behaves as if it adds M/2 of effective mass to the system's translational KE."
             />
           </div>
+        </section>
+
+        {/* How to pick the right I — reason, don't memorize */}
+        <section className="mb-16">
+          <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+            How to Pick the Right <span style={{ color: ACCENT }}>I</span> — Reasoning, Not Memorizing
+          </h3>
+          <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-3xl">
+            Every moment of inertia comes from one integral:{" "}
+            <span className="font-mono">I = ∫ r² dm</span>. Mass close to the axis barely
+            counts (small <span className="font-mono">r²</span>); mass far from the axis
+            counts a lot. So the question is always:{" "}
+            <em>"where is the mass relative to the axis I'm spinning around?"</em>
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <Card className="interactive-panel" style={{ borderLeftWidth: 4, borderLeftColor: ACCENT }}>
+              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                The intuition (in 4 rules)
+              </h4>
+              <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-200">
+                <li>
+                  <strong>1. Hollow &gt; solid.</strong> A hoop has all its mass at radius{" "}
+                  <span className="font-mono">R</span> ⇒{" "}
+                  <span className="font-mono">I = MR²</span>. A solid disk has mass spread{" "}
+                  <em>inside</em> too, so average r² is smaller ⇒{" "}
+                  <span className="font-mono">I = ½MR²</span>.
+                </li>
+                <li>
+                  <strong>2. Sphere &lt; cylinder of same M, R.</strong> A sphere's mass
+                  also extends along the axis (small r there), pulling the average r² down.
+                  Solid sphere: <span className="font-mono">2/5 MR²</span> &lt; solid cyl{" "}
+                  <span className="font-mono">½ MR²</span>.
+                </li>
+                <li>
+                  <strong>3. Axis through center &lt; axis through end.</strong> Move the
+                  axis to the end of a rod and the far end is now at distance{" "}
+                  <span className="font-mono">L</span> instead of <span className="font-mono">L/2</span>.
+                  Center: <span className="font-mono">1/12 ML²</span>. End:{" "}
+                  <span className="font-mono">1/3 ML²</span> (4× bigger).
+                </li>
+                <li>
+                  <strong>4. Parallel-axis lifts I by Md².</strong> Need I about an axis{" "}
+                  <em>not through the CM</em>?{" "}
+                  <span className="font-mono">I = I_cm + M·d²</span> where{" "}
+                  <span className="font-mono">d</span> is the offset. Always larger than
+                  through CM.
+                </li>
+              </ul>
+            </Card>
+
+            <Card className="interactive-panel" style={{ borderLeftWidth: 4, borderLeftColor: "#f59e0b" }}>
+              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                Quick checks ("does the answer feel right?")
+              </h4>
+              <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-200">
+                <li>
+                  <strong>Rolling race down a ramp?</strong> Smallest{" "}
+                  <span className="font-mono">I/MR²</span> wins. Order:{" "}
+                  <span className="font-mono">sphere (2/5) &lt; disk (1/2) &lt; hollow sphere (2/3) &lt; hoop (1)</span>.
+                </li>
+                <li>
+                  <strong>Did you forget the axis?</strong> "Solid sphere" alone isn't enough —
+                  about a diameter it's <span className="font-mono">2/5 MR²</span>; about a
+                  tangent line it's <span className="font-mono">2/5 MR² + MR² = 7/5 MR²</span>{" "}
+                  (parallel-axis with d = R).
+                </li>
+                <li>
+                  <strong>Pulley in an Atwood / rolling problem?</strong> Treat as a solid disk:
+                  <span className="font-mono"> I = ½MR²</span>. The <span className="font-mono">R²</span>{" "}
+                  always cancels with <span className="font-mono">ω = v/R</span> in the energy budget,
+                  leaving <span className="font-mono">¼Mv²</span>.
+                </li>
+                <li>
+                  <strong>Compound shape?</strong> I adds. A rod with masses at the ends:{" "}
+                  <span className="font-mono">I_rod + I_mass1 + I_mass2 = (1/12)ML² + m₁d₁² + m₂d₂²</span>.
+                  Same axis for every term.
+                </li>
+                <li>
+                  <strong>Physical pendulum (SHM page)?</strong> Use I about the <em>pivot</em>,
+                  not about the CM. Apply parallel-axis to shift.
+                </li>
+              </ul>
+            </Card>
+          </div>
+
+          <Card className="interactive-panel" style={{ borderLeftWidth: 4, borderLeftColor: ACCENT }}>
+            <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Common shapes — what to plug in
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+              The "why" column is the reasoning, not a derivation — use it to sanity-check
+              the formula instead of reaching for a table.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b-2 border-gray-300 dark:border-slate-600 text-left">
+                    <th className="py-2 pr-4 text-gray-700 dark:text-gray-200">Shape & axis</th>
+                    <th className="py-2 pr-4 text-gray-700 dark:text-gray-200 font-mono">I</th>
+                    <th className="py-2 text-gray-700 dark:text-gray-200">Why this number</th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-700 dark:text-gray-200">
+                  <tr className="border-b border-gray-200 dark:border-slate-700">
+                    <td className="py-2 pr-4">Hoop / thin ring (axis through center, ⊥ to plane)</td>
+                    <td className="py-2 pr-4 font-mono font-bold" style={{ color: ACCENT }}>MR²</td>
+                    <td className="py-2">All mass at distance R. r² = R² for every dm.</td>
+                  </tr>
+                  <tr className="border-b border-gray-200 dark:border-slate-700">
+                    <td className="py-2 pr-4">Hollow cylinder / thin shell (about cylinder axis)</td>
+                    <td className="py-2 pr-4 font-mono font-bold" style={{ color: ACCENT }}>MR²</td>
+                    <td className="py-2">Same as hoop — depth along axis doesn't change r.</td>
+                  </tr>
+                  <tr className="border-b border-gray-200 dark:border-slate-700">
+                    <td className="py-2 pr-4">Solid disk / cylinder (about cylinder axis)</td>
+                    <td className="py-2 pr-4 font-mono font-bold" style={{ color: ACCENT }}>½ MR²</td>
+                    <td className="py-2">Mass spread from r=0 to R. Average r² is R²/2.</td>
+                  </tr>
+                  <tr className="border-b border-gray-200 dark:border-slate-700">
+                    <td className="py-2 pr-4">Solid sphere (about a diameter)</td>
+                    <td className="py-2 pr-4 font-mono font-bold" style={{ color: ACCENT }}>2/5 MR²</td>
+                    <td className="py-2">Mass also concentrated along the axis (small r there) → smaller than disk.</td>
+                  </tr>
+                  <tr className="border-b border-gray-200 dark:border-slate-700">
+                    <td className="py-2 pr-4">Hollow sphere / thin spherical shell (diameter)</td>
+                    <td className="py-2 pr-4 font-mono font-bold" style={{ color: ACCENT }}>2/3 MR²</td>
+                    <td className="py-2">Between solid sphere and hoop — mass at radius R but spread over a sphere not a ring.</td>
+                  </tr>
+                  <tr className="border-b border-gray-200 dark:border-slate-700">
+                    <td className="py-2 pr-4">Thin rod (axis through center, ⊥ to rod)</td>
+                    <td className="py-2 pr-4 font-mono font-bold" style={{ color: ACCENT }}>1/12 ML²</td>
+                    <td className="py-2">Mass spread from −L/2 to +L/2. ⟨r²⟩ = L²/12.</td>
+                  </tr>
+                  <tr className="border-b border-gray-200 dark:border-slate-700">
+                    <td className="py-2 pr-4">Thin rod (axis through one end, ⊥ to rod)</td>
+                    <td className="py-2 pr-4 font-mono font-bold" style={{ color: ACCENT }}>1/3 ML²</td>
+                    <td className="py-2">Same rod, axis shifted to end. Parallel-axis: 1/12 + (L/2)² = 1/3. 4× bigger.</td>
+                  </tr>
+                  <tr className="border-b border-gray-200 dark:border-slate-700">
+                    <td className="py-2 pr-4">Rectangular plate (axis through center, ⊥ to plate)</td>
+                    <td className="py-2 pr-4 font-mono font-bold" style={{ color: ACCENT }}>1/12 M(a² + b²)</td>
+                    <td className="py-2">Two perpendicular rod-distributions added.</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 pr-4">Point mass at distance d</td>
+                    <td className="py-2 pr-4 font-mono font-bold" style={{ color: ACCENT }}>m·d²</td>
+                    <td className="py-2">All mass at one r. Building block for compound shapes.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          <Card
+            className="interactive-panel mt-6"
+            style={{ borderLeftWidth: 4, borderLeftColor: "#0ea5e9" }}
+          >
+            <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Parallel-axis theorem — the one move that handles "weird" axes
+            </h4>
+            <p className="text-sm text-gray-700 dark:text-gray-200 mb-3">
+              Most tables list <span className="font-mono">I_cm</span> (axis through the
+              center of mass). When your axis is offset by distance{" "}
+              <span className="font-mono">d</span>, just add{" "}
+              <span className="font-mono">M·d²</span>:
+            </p>
+            <div className="bg-gray-50 dark:bg-slate-700 rounded p-3 font-mono text-center text-base mb-3">
+              I = I_cm + M·d²
+            </div>
+            <p className="text-sm text-gray-700 dark:text-gray-200">
+              <strong>Quick example.</strong> Solid sphere about a tangent line:{" "}
+              <span className="font-mono">I = (2/5)MR² + MR² = (7/5)MR²</span>. Rod about
+              one end: <span className="font-mono">I = (1/12)ML² + M(L/2)² = (1/3)ML²</span>{" "}
+              — exactly the table value. <strong>Use this any time the axis isn't through the CM</strong>{" "}
+              (physical pendulums, swinging planks, off-center pulleys).
+            </p>
+          </Card>
         </section>
 
         {/* Worked Example: Cylinder Race */}
@@ -352,38 +567,98 @@ export default function RotationalEnergy() {
             }
             steps={[
               {
-                heading: "Energy conservation: PE → KE_trans + KE_rot",
+                heading: "Set up energy conservation: gravitational PE → kinetic energy",
                 body: (
-                  <p>
-                    Mgh = ½Mv² + ½Iω². With v = Rω → ω² = v²/R², the I term becomes ½(I/MR²)·Mv².
-                  </p>
+                  <>
+                    <Why>
+                      The ramp is frictionless to slipping (well, there's static friction
+                      that lets the cylinders roll, but it does no work because the contact
+                      point is momentarily at rest). So mechanical energy is conserved: the
+                      potential energy lost in falling height h becomes kinetic energy at the
+                      bottom.
+                    </Why>
+                    <Why>
+                      A rolling object has <strong>two</strong> kinds of kinetic energy:
+                      translation (the center of mass moving forward) and rotation (the body
+                      spinning about its axis). We must include both:
+                    </Why>
+                    <Eq>M g h = ½ M v² + ½ I ω²</Eq>
+                    <Why>
+                      <strong>Use the rolling constraint v = R·ω</strong> to convert ω into
+                      v. This is the no-slip condition for a wheel: the rim's tangential
+                      speed equals the center's translational speed. Squaring: ω² = v²/R².
+                      Plug into the rotation term:
+                    </Why>
+                    <Eq>½ I ω² = ½ I · (v² / R²) = ½ M v² · ( I / (M R²) )</Eq>
+                  </>
                 ),
               },
               {
-                heading: "Solve for v",
+                heading: "Factor out ½Mv² and solve symbolically",
                 body: (
-                  <p>
-                    Mgh = ½Mv²(1 + I/(MR²)) → v = √(2gh / (1 + I/(MR²)))
-                  </p>
+                  <>
+                    <Why>
+                      Group the kinetic-energy terms by pulling out ½Mv²:
+                    </Why>
+                    <Eq>M g h = ½ M v² · ( 1 + I / (M R²) )</Eq>
+                    <Why>
+                      Mass M cancels off both sides — the answer won't depend on how heavy
+                      the cylinder is. Solving for v:
+                    </Why>
+                    <Eq>v = √( 2 g h / (1 + I/(M R²)) )</Eq>
+                    <Why>
+                      The <strong>shape factor</strong> I/(MR²) is dimensionless and depends
+                      only on geometry. For a solid cylinder it's ½; for a hollow cylinder
+                      (thin hoop) it's 1. Notice R also cancels! Two cylinders of different
+                      radius but same shape will tie at the bottom.
+                    </Why>
+                  </>
                 ),
               },
               {
-                heading: "(a) Hollow cylinder: I/(MR²) = 1",
-                body: <p>v_hollow = √(2·9.8·1.5 / 2) = √(14.7)</p>,
+                heading: "(a) Hollow cylinder: shape factor I/(MR²) = 1",
+                body: (
+                  <>
+                    <Why>
+                      Plug in I/(MR²) = 1, h = 1.5 m, g = 9.8 m/s²:
+                    </Why>
+                    <Eq>v_hollow = √( 2 · 9.8 · 1.5 / (1 + 1) ) = √(29.4 / 2) = √14.7</Eq>
+                    <Eq>v_hollow ≈ 3.83 m/s</Eq>
+                  </>
+                ),
                 result: { label: "v_hollow", value: "≈ 3.83 m/s", color: "red" },
               },
               {
-                heading: "(b) Solid cylinder: I/(MR²) = ½",
-                body: <p>v_solid = √(2·9.8·1.5 / 1.5) = √(19.6)</p>,
+                heading: "(b) Solid cylinder: shape factor I/(MR²) = ½",
+                body: (
+                  <>
+                    <Why>
+                      Same h, same g, but I/(MR²) = ½ now:
+                    </Why>
+                    <Eq>v_solid = √( 2 · 9.8 · 1.5 / (1 + ½) ) = √(29.4 / 1.5) = √19.6</Eq>
+                    <Eq>v_solid ≈ 4.43 m/s</Eq>
+                  </>
+                ),
                 result: { label: "v_solid", value: "≈ 4.43 m/s", color: "red" },
               },
               {
-                heading: "(c) Who wins?",
+                heading: "(c) Compare and identify the winner",
                 body: (
-                  <p>
-                    Solid cylinder is faster at the bottom — and since both started at the same
-                    instant, the solid one reaches the bottom first.
-                  </p>
+                  <>
+                    <Why>
+                      Both cylinders start from rest at the top of the same ramp. Their
+                      time-averaged accelerations down the ramp are constant (since shape
+                      factor is constant). Higher final speed → higher acceleration the whole
+                      way down → reaches the bottom sooner.
+                    </Why>
+                    <Why>
+                      Because v_solid = 4.43 m/s &gt; v_hollow = 3.83 m/s (and mass cancelled
+                      so this isn't about who's heavier), the solid cylinder wins regardless
+                      of mass or radius. <strong>Why?</strong> The hollow cylinder has all
+                      its mass at the rim (large I), so a bigger fraction of the falling
+                      energy goes into <em>spin</em>. Less energy is left for forward motion.
+                    </Why>
+                  </>
                 ),
                 result: { label: "Winner", value: "Solid cylinder", color: "green" },
               },
@@ -421,11 +696,39 @@ export default function RotationalEnergy() {
                   label: "(a)",
                   question: "Speed of the bucket as it hits water",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Energy: m_b·g·h = ½m_b·v² + ½I_p·ω². With ω = v/R and I_p = ½M_p·R²:</p>
-                      <p>m_b·g·h = ½m_b·v² + ¼M_p·v² = v²(½m_b + ¼M_p)</p>
-                      <p>v² = m_b·g·h / (½m_b + ¼M_p) = 2·9.8·4 / (½·2 + ¼·0.8)</p>
-                      <p>v² = 78.4 / 1.2 = 65.33</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Identify what carries energy.</strong> The bucket descends 4
+                        m, so the system loses gravitational PE = m_b·g·h. Where does that
+                        energy go? Two places: (1) the bucket's translational kinetic energy
+                        ½m_b·v², and (2) the spindle's rotational kinetic energy ½I_p·ω².
+                        The well water is at the bottom; nothing else moves.
+                      </p>
+                      <p>
+                        <strong>Couple the rope speed to the spindle's angular speed.</strong>
+                        The rope wraps around the spindle of radius R. As the bucket falls
+                        with speed v, the rope unwinds at speed v, so the spindle's edge
+                        moves at speed v, meaning ω = v/R.
+                      </p>
+                      <p>
+                        <strong>Use the spindle's moment of inertia.</strong> A solid cylinder
+                        has I_p = ½ M_p · R². So:
+                      </p>
+                      <Eq>½ I_p ω² = ½ · (½ M_p R²) · (v/R)² = ¼ M_p v²</Eq>
+                      <p>
+                        Notice: R cancels. The size of the spindle doesn't matter, only its
+                        mass.
+                      </p>
+                      <p><strong>Energy conservation:</strong></p>
+                      <Eq>m_b · g · h = ½ m_b · v² + ¼ M_p · v² = v² · ( ½ m_b + ¼ M_p )</Eq>
+                      <p>Plug in m_b = 2 kg, M_p = 0.8 kg, h = 4 m, g = 9.8:</p>
+                      <Eq>2 · 9.8 · 4 = v² · ( ½ · 2 + ¼ · 0.8 ) = v² · ( 1 + 0.2 ) = 1.2 v²</Eq>
+                      <Eq>v² = 78.4 / 1.2 ≈ 65.33   →   v ≈ 8.08 m/s</Eq>
+                      <p>
+                        <strong>Compare to free-fall:</strong> if there were no spindle,
+                        v_free = √(2gh) = √78.4 ≈ 8.85 m/s. The pulley "drinks" some of the
+                        energy, slowing the bucket by about 9%.
+                      </p>
                     </div>
                   ),
                   answer: { value: "v ≈ 8.08", unit: "m/s" },
@@ -448,11 +751,37 @@ export default function RotationalEnergy() {
                   label: "(a)",
                   question: "Speed of the 6-kg mass at impact",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Net energy change: PE_lost = m₁gh − m₂gh = (6−2)·9.8·4 = 156.8 J</p>
-                      <p>KE gained: ½(m₁+m₂)v² + ¼M_p·v²</p>
-                      <p>156.8 = 4v² + 0.75v² = 4.75v²</p>
-                      <p>v² = 33.01</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>The trick with Atwood + rope:</strong> the rope speed v is the
+                        same on both sides. So both masses move at the same speed v (one
+                        going down, the other going up at the same rate). And the pulley
+                        rotates at ω = v/R.
+                      </p>
+                      <p>
+                        <strong>Net change in gravitational PE.</strong> The 6-kg mass drops
+                        4 m, gaining height-deficit, so PE lost = m₁·g·h. The 2-kg mass goes
+                        up 4 m, gaining PE = m₂·g·h. Net change in the system's PE:
+                      </p>
+                      <Eq>ΔPE = (m₁ − m₂) · g · h = (6 − 2) · 9.8 · 4 = 156.8 J</Eq>
+                      <p>
+                        <strong>Where does this energy go?</strong> Both masses move at v, so
+                        both have ½m·v² of KE. The pulley has ½I·ω² with I = ½M_p·R² and ω =
+                        v/R, which simplifies (as in the bucket problem) to ¼M_p·v²:
+                      </p>
+                      <Eq>KE_total = ½ m₁ v² + ½ m₂ v² + ¼ M_p · v² = ½ (m₁ + m₂) v² + ¼ M_p v²</Eq>
+                      <p>
+                        Set ΔPE = KE_total (energy conservation), plug in M_p = 3 kg,
+                        m₁+m₂ = 8 kg:
+                      </p>
+                      <Eq>156.8 = ½ · 8 · v² + ¼ · 3 · v² = 4 v² + 0.75 v² = 4.75 v²</Eq>
+                      <Eq>v² = 156.8 / 4.75 ≈ 33.01   →   v ≈ 5.74 m/s</Eq>
+                      <p>
+                        Physical sanity: 4 m fall with no pulley and no counter-mass would
+                        give v = √(2·9.8·4) = 8.85 m/s. Here we have both a counter-mass
+                        (the 2 kg) and a heavy pulley fighting the fall, hence the much
+                        slower 5.74 m/s.
+                      </p>
                     </div>
                   ),
                   answer: { value: "v ≈ 5.74", unit: "m/s" },
@@ -475,17 +804,53 @@ export default function RotationalEnergy() {
                 {
                   label: "(a)",
                   question: "Moment of inertia I of the roll",
-                  solutionSteps: <p>Solid cylinder: I = ½MR² = ½·0.2·(0.15)² = 0.5·0.2·0.0225</p>,
+                  solutionSteps: (
+                    <div className="space-y-2">
+                      <p>
+                        The problem says to model the roll as a uniform <strong>solid
+                        cylinder</strong> rotating about its central axis. The standard table
+                        value for that geometry is I = ½ M R². Plug in M = 0.2 kg, R = 0.15
+                        m:
+                      </p>
+                      <Eq>I = ½ · M · R² = ½ · 0.2 · (0.15)² = 0.5 · 0.2 · 0.0225</Eq>
+                      <Eq>I = 0.00225 kg·m²</Eq>
+                      <p>
+                        (If the problem instead said "thin-walled tube," we'd use I = MR² and
+                        get 0.0045 kg·m² — exactly twice as much. Always confirm the geometry
+                        before pulling a formula from the table.)
+                      </p>
+                    </div>
+                  ),
                   answer: { value: "I = 0.00225", unit: "kg·m²" },
                 },
                 {
                   label: "(b)",
                   question: "Speed of the roach just before hitting the floor",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>String constraint: v_roach = r·ω → ω = v/r.</p>
-                      <p>Energy: m·g·h = ½m·v² + ½I·ω² = ½m·v² + ¼M·v²</p>
-                      <p>v² = m·g·h / (½m + ¼M) = 0.1·9.8·0.7 / (0.05 + 0.05) = 0.686 / 0.1 = 6.86</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Constraint between roach speed and roll spin.</strong> The
+                        toilet paper unwinds from radius r as the roll spins. Each radian of
+                        spin lets out r meters of paper. So the speed of the dropping end
+                        (and the roach clinging to it) is v = r·ω, equivalently ω = v/r.
+                      </p>
+                      <p>
+                        <strong>Energy conservation.</strong> The roach falls h = 0.7 m,
+                        losing m·g·h of PE. That goes into the roach's translational KE
+                        (½m·v²) and the roll's rotational KE (½I·ω²):
+                      </p>
+                      <Eq>m · g · h = ½ m · v² + ½ I · ω²</Eq>
+                      <p>Substitute ω = v/r and I = ½M r²:</p>
+                      <Eq>½ I ω² = ½ · (½ M r²) · (v/r)² = ¼ M · v²</Eq>
+                      <p>(The radius r cancels — same neat trick as the well-bucket.) So:</p>
+                      <Eq>m · g · h = ½ m · v² + ¼ M · v² = v² · (½ m + ¼ M)</Eq>
+                      <p>Plug in m = 0.1, M = 0.2, h = 0.7, g = 9.8:</p>
+                      <Eq>0.1 · 9.8 · 0.7 = v² · (½·0.1 + ¼·0.2) = v² · (0.05 + 0.05) = 0.1 v²</Eq>
+                      <Eq>v² = 0.686 / 0.1 = 6.86   →   v ≈ 2.62 m/s</Eq>
+                      <p>
+                        Compare to free fall (no roll attached): v_free = √(2·9.8·0.7) = 3.71
+                        m/s. The roll's inertia limits the roach to ~70% of free-fall speed.
+                      </p>
                     </div>
                   ),
                   answer: { value: "v ≈ 2.62", unit: "m/s" },

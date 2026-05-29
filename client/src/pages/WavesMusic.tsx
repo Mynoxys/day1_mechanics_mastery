@@ -4,7 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
-import { WorkedExample } from "@/components/midterm/WorkedExample";
+import { WorkedExample, Eq, Why } from "@/components/midterm/WorkedExample";
 import { PracticeProblem } from "@/components/midterm/PracticeProblem";
 import { FormulaBlock } from "@/components/midterm/FormulaBlock";
 
@@ -359,74 +359,159 @@ export default function WavesMusic() {
                 </div>
               }
               variables={[
-                { symbol: "k", meaning: "wave number", units: "rad/m" },
-                { symbol: "ω", meaning: "angular frequency", units: "rad/s" },
-                { symbol: "+ωt", meaning: "wave moves in −x direction" },
-                { symbol: "−ωt", meaning: "wave moves in +x direction" },
+                {
+                  symbol: "k",
+                  meaning:
+                    "how squished the wave is in space — bigger k means crests are packed closer together",
+                  units: "rad/m",
+                },
+                {
+                  symbol: "ω",
+                  meaning:
+                    "how fast the wave wiggles in time — like an angular version of frequency, bigger ω means more wiggles per second",
+                  units: "rad/s",
+                },
+                {
+                  symbol: "+ωt",
+                  meaning:
+                    "wave travels in −x direction (to keep phase constant as t grows, x must shrink — the crest moves left)",
+                },
+                {
+                  symbol: "−ωt",
+                  meaning:
+                    "wave travels in +x direction (the crest moves right as time advances)",
+                },
               ]}
-              whenToUse="Reading off wave properties from a given y(x,t) expression."
+              whenToUse="A wave is a shape that moves. y(x,t) = A sin(kx ± ωt) is that shape with two knobs: k (compression in space) and ω (cycling in time). v = ω/k = fλ is just 'speed = (how fast it wiggles) × (how long one wiggle is)' — common sense once translated. To find direction of travel, follow the crest: ask 'as t advances, what does x have to do to keep the phase constant?'"
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Wave on a string"
               formula={<div>v = √(T/μ)</div>}
               variables={[
-                { symbol: "T", meaning: "tension in the string", units: "N" },
-                { symbol: "μ", meaning: "mass per unit length", units: "kg/m" },
+                {
+                  symbol: "T",
+                  meaning:
+                    "how hard the string is being pulled end-to-end — bigger T = tighter string",
+                  units: "N",
+                },
+                {
+                  symbol: "μ",
+                  meaning:
+                    "how heavy the string is per meter of length — fatter / denser strings have bigger μ",
+                  units: "kg/m",
+                },
               ]}
-              whenToUse="Strings: guitar, violin, vocal cords. Heavier strings or looser strings → slower wave → lower pitch."
+              whenToUse="Tighter strings snap waves through faster (bigger T → bigger v); heavier strings drag waves down (bigger μ → smaller v). That's why the thick low-E guitar string vibrates slowly and sounds low, and the thin high-E vibrates fast and sounds high. Same physics for vocal cords: tighten them to sing higher."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Standing wave: string / open-open pipe"
               formula={<div>f_n = n·v/(2L), n = 1, 2, 3, ...</div>}
               variables={[
-                { symbol: "L", meaning: "string or pipe length", units: "m" },
-                { symbol: "n", meaning: "harmonic number (any integer)" },
+                {
+                  symbol: "L",
+                  meaning:
+                    "length of the vibrating segment — guitar fret-to-bridge, or the full pipe length",
+                  units: "m",
+                },
+                {
+                  symbol: "n",
+                  meaning:
+                    "which harmonic: n=1 is the fundamental (lowest, loudest), n=2 is one octave up, n=3 is octave + a fifth, etc.",
+                },
               ]}
-              whenToUse="String fixed at both ends (guitar, violin). Pipe open at both ends (flute)."
+              whenToUse="Both ends look the same to the wave: a string is clamped at both ends (nodes), an open pipe is free at both ends (antinodes). That symmetry lets ALL integer harmonics fit, and the fundamental wavelength is exactly twice the cavity length (L = λ/2). Same formula for both, even though the boundary types are opposite — what matters is the symmetry, not the type."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Standing wave: closed-open pipe"
               formula={
                 <div className="space-y-1 text-base">
-                  <div>f_n = n·v/(4L), n = 1, 3, 5, ... (odd only!)</div>
-                  <div>Successive overtones differ by 2f₁</div>
+                  <div>f_n = n·v/(4L), n = 1, 3, 5, ... (odd only)</div>
+                  <div>Successive allowed overtones differ by 2f₁</div>
                 </div>
               }
               variables={[
-                { symbol: "L", meaning: "pipe length", units: "m" },
+                {
+                  symbol: "L",
+                  meaning:
+                    "cavity length, closed end to open end (mouthpiece reed to bell, for a clarinet/sax)",
+                  units: "m",
+                },
               ]}
-              whenToUse="Pipe closed at one end, open at the other (clarinet, saxophone, organ pipes). The 'odd only' rule is the trap on every exam."
+              whenToUse="Closed end forces the air still (a node); open end lets it move freely (an antinode). That asymmetry geometrically rules out even harmonics — only patterns with an odd number of quarter-waves fit. So a clarinet of length L sounds an OCTAVE LOWER than an open-open flute of the same length (L = λ/4 vs L = λ/2). The 'odd-only' rule isn't a trick to memorize — it falls out of the geometry. Successive odd harmonics 3f₁, 5f₁, 7f₁, ... are spaced 2f₁ apart, which is how problems back out f₁ from two consecutive overtones."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Doppler shift"
               formula={<div>f' = f · (v ± v_obs) / (v ∓ v_src)</div>}
               variables={[
-                { symbol: "v", meaning: "speed of sound (in air ≈ 345 m/s, in water ≈ 1450 m/s)" },
-                { symbol: "v_obs", meaning: "observer speed (numerator)" },
-                { symbol: "v_src", meaning: "source speed (denominator)" },
+                {
+                  symbol: "f",
+                  meaning: "frequency the source actually emits",
+                  units: "Hz",
+                },
+                {
+                  symbol: "f'",
+                  meaning: "frequency the observer hears",
+                  units: "Hz",
+                },
+                {
+                  symbol: "v",
+                  meaning:
+                    "how fast the wave travels in the medium (air ≈ 345 m/s, water ≈ 1450 m/s)",
+                },
+                {
+                  symbol: "v_obs",
+                  meaning:
+                    "how fast the observer is moving (always enter as a positive number — the sign comes from the rule below)",
+                  units: "m/s",
+                },
+                {
+                  symbol: "v_src",
+                  meaning:
+                    "how fast the source is moving (positive number; sign from rule below)",
+                  units: "m/s",
+                },
               ]}
-              whenToUse="Sign rule: approaching → numerator +, denominator −. Both raise f'. For sonar/reflection: apply twice."
+              whenToUse="Approaching makes pitch go UP, receding makes it go DOWN — that's the siren you've heard a thousand times. That's the only thing to memorize. Pick whatever signs in (v ± v_obs) / (v ∓ v_src) make f' bigger when something is approaching and smaller when receding. You can't get it wrong because you can hear the right answer in your head. For echoes / sonar: apply Doppler twice — first the source-to-target trip; then the target re-emits as a new source for the return trip."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Decibels & inverse-square"
               formula={
                 <div className="space-y-1 text-base">
-                  <div>β = 10·log(I/I₀)</div>
+                  <div>β = 10·log₁₀(I/I₀)</div>
                   <div>I ∝ 1/r²</div>
                   <div>20 dB drop = 10× distance</div>
                 </div>
               }
               variables={[
-                { symbol: "I₀", meaning: "reference intensity (10⁻¹² W/m²)" },
-                { symbol: "I", meaning: "actual intensity at observer", units: "W/m²" },
-                { symbol: "r", meaning: "distance from source (point source)", units: "m" },
+                {
+                  symbol: "I",
+                  meaning:
+                    "how much sound power hits one square meter at the listener",
+                  units: "W/m²",
+                },
+                {
+                  symbol: "I₀",
+                  meaning:
+                    "the quietest sound a human can detect, used as the reference '0 dB' (10⁻¹² W/m²)",
+                },
+                {
+                  symbol: "β",
+                  meaning:
+                    "loudness in decibels — a logarithmic scale that matches how the ear actually hears",
+                  units: "dB",
+                },
+                {
+                  symbol: "r",
+                  meaning: "distance from a point source",
+                  units: "m",
+                },
               ]}
-              whenToUse="Sound-loudness problems and 'how far must I stand to drop X dB' problems."
+              whenToUse="Sound spreads out spherically from a small source — by the time it reaches you at distance r, the same total power is smeared over a sphere of area 4πr², so intensity falls as 1/r². The decibel scale is logarithmic to match how the ear works (each +10 dB = 10× the intensity, which feels like ~doubling the loudness). Useful rules of thumb: every 6 dB drop ≈ doubling the distance; every 20 dB drop = ten times the distance."
             />
           </div>
         </section>
@@ -446,53 +531,144 @@ export default function WavesMusic() {
             }
             steps={[
               {
-                heading: "Read off A, k, ω from the equation",
+                heading: "Pattern-match: identify A, k, ω from the wave's structure",
                 body: (
-                  <p>
-                    A = 0.25 m, k = 3.14 rad/m, ω = 450 rad/s. The "+ωt" sign is critical for part
-                    (f).
-                  </p>
+                  <>
+                    <Why>
+                      The general traveling wave has the form y(x,t) = A·sin(kx ± ωt + φ).
+                      Comparing to y(x,t) = 0.25·sin(3.14x + 450t):
+                    </Why>
+                    <Eq>A = 0.25 m       (the multiplier in front of sin)</Eq>
+                    <Eq>k = 3.14 rad/m   (the coefficient of x — the "wave number")</Eq>
+                    <Eq>ω = 450 rad/s    (the coefficient of t — angular frequency)</Eq>
+                    <Why>
+                      <strong>Why the +ωt sign matters:</strong> the relative sign between
+                      kx and ωt encodes the direction of travel. We'll deal with that in
+                      part (f). Don't lose track of it.
+                    </Why>
+                  </>
                 ),
               },
               {
-                heading: "(a) frequency f = ω/(2π)",
-                body: <p>= 450/(2π) = 450/6.283</p>,
+                heading: "(a) Frequency f from ω",
+                body: (
+                  <>
+                    <Why>
+                      Angular frequency ω is "radians per second"; ordinary frequency f is
+                      "cycles per second". One cycle = 2π radians, so ω = 2π·f, or
+                      equivalently f = ω/(2π):
+                    </Why>
+                    <Eq>f = ω / (2π) = 450 / 6.283 ≈ 71.62 Hz</Eq>
+                    <Why>
+                      So the string oscillates ~72 times per second at any fixed point.
+                    </Why>
+                  </>
+                ),
                 result: { label: "f", value: "≈ 71.62 Hz", color: "green" },
               },
               {
-                heading: "(b) period T = 1/f",
-                body: <p>= 1/71.62</p>,
+                heading: "(b) Period T = time per cycle",
+                body: (
+                  <>
+                    <Why>
+                      Period and frequency are reciprocals: a wave repeating 71.62 times
+                      per second has each cycle taking 1/71.62 of a second:
+                    </Why>
+                    <Eq>T = 1 / f = 1 / 71.62 ≈ 0.0140 s</Eq>
+                  </>
+                ),
                 result: { label: "T", value: "≈ 0.0140 s", color: "green" },
               },
               {
-                heading: "(c) wavelength λ = 2π/k",
-                body: <p>= 2π/3.14 = 6.283/3.14</p>,
+                heading: "(c) Wavelength λ from k",
+                body: (
+                  <>
+                    <Why>
+                      Wave number k is "radians per meter" of spatial advance — it tells
+                      you how compressed the spatial pattern is. Just as one cycle in time
+                      is 2π radians, one wavelength in space is 2π radians of phase. So:
+                    </Why>
+                    <Eq>λ = 2π / k = 6.283 / 3.14 ≈ 2.00 m</Eq>
+                    <Why>
+                      Two meters between adjacent peaks of the wave on the string.
+                    </Why>
+                  </>
+                ),
                 result: { label: "λ", value: "= 2.00 m", color: "green" },
               },
               {
-                heading: "(d) wave speed v = ω/k = fλ",
-                body: <p>= 450/3.14 (or 71.62 × 2)</p>,
+                heading: "(d) Wave speed",
+                body: (
+                  <>
+                    <Why>
+                      The wave's propagation speed satisfies v = ω/k = f·λ. Either form
+                      gives the same answer (which is itself a consistency check):
+                    </Why>
+                    <Eq>v = ω / k = 450 / 3.14 ≈ 143.3 m/s</Eq>
+                    <Eq>or:  v = f · λ = 71.62 · 2.00 ≈ 143.3 m/s   ✓</Eq>
+                    <Why>
+                      About 143 m/s — typical for a tightly tensioned thin string.
+                    </Why>
+                  </>
+                ),
                 result: { label: "v", value: "≈ 143.3 m/s", color: "green" },
               },
               {
-                heading: "(e) amplitude",
-                body: <p>Just A from the equation.</p>,
+                heading: "(e) Amplitude",
+                body: (
+                  <>
+                    <Why>
+                      Amplitude is just the maximum displacement — read directly off the
+                      equation as the multiplier of the sin function:
+                    </Why>
+                    <Eq>A = 0.25 m</Eq>
+                  </>
+                ),
                 result: { label: "A", value: "= 0.25 m", color: "green" },
               },
               {
-                heading: "(f) direction of travel",
+                heading: "(f) Direction of travel — the sign trap",
                 body: (
-                  <p>
-                    The "+ωt" sign means as t increases, x must DECREASE to keep the phase
-                    constant. So the wave moves in the −x direction. (If it had been "−ωt", the
-                    wave would move in +x.)
-                  </p>
+                  <>
+                    <Why>
+                      A traveling wave keeps its shape over time. The same point on the
+                      wave (e.g. a particular crest) travels with a fixed value of phase
+                      (kx ± ωt). We "follow the crest" by asking: as t advances, what must
+                      x do to keep the phase unchanged?
+                    </Why>
+                    <Why>
+                      Our wave has phase (kx + ωt). For phase to stay constant as t
+                      <strong> increases</strong>, x must <strong>decrease</strong>. So the
+                      crest moves in the −x direction. Thus:
+                    </Why>
+                    <Eq>(kx + ωt) form → wave travels in −x direction (leftward)</Eq>
+                    <Eq>(kx − ωt) form → wave travels in +x direction (rightward)</Eq>
+                    <Why>
+                      Memorize this sign rule — it's the most-failed Day 6 question.
+                    </Why>
+                  </>
                 ),
                 result: { label: "Direction", value: "−x direction", color: "green" },
               },
               {
-                heading: "(g) string mass density μ = T/v²",
-                body: <p>= 100 / (143.3)² = 100 / 20,540</p>,
+                heading: "(g) String mass density μ from wave speed and tension",
+                body: (
+                  <>
+                    <Why>
+                      For a transverse wave on a string, the wave speed is determined by
+                      the tension T (Newtons of pull) and the linear mass density μ (kg of
+                      string per meter):
+                    </Why>
+                    <Eq>v = √(T / μ)   →   μ = T / v²</Eq>
+                    <Why>
+                      Plug in T = 100 N and v = 143.3 m/s:
+                    </Why>
+                    <Eq>μ = 100 / (143.3)² = 100 / 20540 ≈ 4.87 × 10⁻³ kg/m</Eq>
+                    <Why>
+                      About 4.87 grams per meter. Reasonable for a thin steel string.
+                    </Why>
+                  </>
+                ),
                 result: { label: "μ", value: "≈ 4.87 × 10⁻³ kg/m", color: "green" },
               },
             ]}
@@ -532,10 +708,21 @@ export default function WavesMusic() {
                   label: "(a)",
                   question: "Sketch / describe the node pattern of fundamental mode",
                   solutionSteps: (
-                    <p>
-                      Open-open pipe fundamental: antinodes at both ends, ONE node in the middle.
-                      Half a wavelength fits inside the pipe (L = λ/2).
-                    </p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Boundary conditions</strong> determine the standing-wave
+                        pattern. At an open end, air molecules can move freely — that's a
+                        pressure node and a displacement <strong>antinode</strong>. So an
+                        open-open pipe must have antinodes at both ends.
+                      </p>
+                      <p>
+                        <strong>The fundamental mode</strong> is the simplest pattern that
+                        respects the boundary conditions. Between two antinodes you need
+                        an odd number of half-cycles; the smallest is one half-cycle:
+                        antinode — node — antinode. That fits exactly half a wavelength
+                        inside the pipe, so L = λ/2.
+                      </p>
+                    </div>
                   ),
                   answer: { value: "Antinode — Node — Antinode" },
                 },
@@ -543,28 +730,67 @@ export default function WavesMusic() {
                   label: "(b)",
                   question: "Length of the resonant cavity for A 440",
                   solutionSteps: (
-                    <p>
-                      f₁ = v/(2L) → L = v/(2f) = 345/(2·440) = 345/880
-                    </p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Combine wave speed and standing-wave geometry.</strong>
+                        For an open-open pipe the n-th harmonic has λ_n = 2L/n, and using
+                        v = f·λ:
+                      </p>
+                      <Eq>f_n = n · v / (2 L)   (n = 1, 2, 3, ...)</Eq>
+                      <p>
+                        Fundamental means n = 1, so f₁ = v/(2L). Solve for L:
+                      </p>
+                      <Eq>L = v / (2 f) = 345 / (2 · 440) = 345 / 880 ≈ 0.392 m</Eq>
+                      <p>
+                        About 39 cm — close to a real concert flute (~67 cm) but shorter
+                        because real flutes have an "end correction" that effectively
+                        lengthens them.
+                      </p>
+                    </div>
                   ),
                   answer: { value: "L ≈ 0.392", unit: "m" },
                 },
                 {
                   label: "(c)",
                   question: "Length to play middle C (262 Hz) in fundamental",
-                  solutionSteps: <p>L = v/(2f) = 345/(2·262) = 345/524</p>,
+                  solutionSteps: (
+                    <div className="space-y-2">
+                      <p>
+                        Same formula L = v/(2f); plug in the new frequency:
+                      </p>
+                      <Eq>L = 345 / (2 · 262) = 345 / 524 ≈ 0.658 m</Eq>
+                      <p>
+                        Lower note → longer wavelength → longer pipe. Makes intuitive
+                        sense: bass instruments are bigger.
+                      </p>
+                    </div>
+                  ),
                   answer: { value: "L ≈ 0.658", unit: "m" },
                 },
                 {
                   label: "(d)",
                   question: "How to play high A (880 Hz) — can't shrink the flute that small",
                   solutionSteps: (
-                    <p>
-                      You can't (the length would be 0.196 m, smaller than the flute can be made).
-                      Instead, <strong>overblow</strong> at the same length to excite the n=2
-                      harmonic. f₂ = 2·v/(2L) = v/L = 345/0.392 = 880 Hz ✓. Node pattern: A—N—A—N—A
-                      (one full wavelength fits).
-                    </p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>The naive answer fails.</strong> If we kept using n = 1, we'd
+                        need L = 345/(2·880) ≈ 0.196 m — about 20 cm. That's shorter than
+                        the flute body itself. Trying to shorten the resonant cavity that
+                        much by uncovering more tone holes doesn't quite get us there.
+                      </p>
+                      <p>
+                        <strong>Trick: overblow to the n = 2 harmonic.</strong> The same
+                        pipe at the same length L = 0.392 m has its n=2 mode at:
+                      </p>
+                      <Eq>f₂ = 2 · v / (2 L) = v / L = 345 / 0.392 ≈ 880 Hz   ✓</Eq>
+                      <p>
+                        This is exactly an octave above A 440, which is what we want. By
+                        blowing harder/faster (overblowing), the player coaxes the pipe
+                        into vibrating at the n=2 mode instead of the fundamental. The
+                        node pattern becomes A—N—A—N—A: one full wavelength fits inside
+                        the pipe.
+                      </p>
+                    </div>
                   ),
                   answer: { value: "Overblow to 2nd harmonic" },
                 },
@@ -586,10 +812,20 @@ export default function WavesMusic() {
                   label: "(a)",
                   question: "Node pattern for fundamental",
                   solutionSteps: (
-                    <p>
-                      String fixed at both ends. Fundamental has nodes at both ends and ONE
-                      antinode in the middle. Length = λ/2.
-                    </p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Boundary conditions for a string:</strong> the ends are
+                        clamped (at the bridge and the nut), so they cannot move
+                        transversely. That makes both ends <strong>nodes</strong>. (This
+                        is the opposite of an open pipe end, which is an antinode.)
+                      </p>
+                      <p>
+                        Smallest pattern with nodes at both ends: node — antinode — node.
+                        Half a wavelength fits inside the string, so L = λ/2 — same
+                        geometry as an open-open pipe. Different boundary types, same
+                        formula!
+                      </p>
+                    </div>
                   ),
                   answer: { value: "Node — Antinode — Node" },
                 },
@@ -597,9 +833,22 @@ export default function WavesMusic() {
                   label: "(b)",
                   question: "Mass per unit length μ",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>v_string = 2L·f = 2·0.648·110 = 142.56 m/s</p>
-                      <p>v² = T/μ → μ = T/v² = 100/(142.56)² = 100/20323</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Step 1 — find wave speed on the string.</strong> For
+                        fundamental on a fixed-fixed string, L = λ/2 → λ = 2L. Wave speed
+                        v = f·λ = f·(2L):
+                      </p>
+                      <Eq>v_string = 2 L · f = 2 · 0.648 · 110 = 142.56 m/s</Eq>
+                      <p>
+                        <strong>Step 2 — relate wave speed to T and μ.</strong> For a
+                        string, v = √(T/μ). Solve for μ:
+                      </p>
+                      <Eq>v² = T / μ   →   μ = T / v²</Eq>
+                      <Eq>μ = 100 / (142.56)² = 100 / 20323 ≈ 4.92 × 10⁻³ kg/m</Eq>
+                      <p>
+                        About 4.9 g per meter of string — typical for a wound A-string.
+                      </p>
                     </div>
                   ),
                   answer: { value: "μ ≈ 4.92 × 10⁻³", unit: "kg/m" },
@@ -608,11 +857,22 @@ export default function WavesMusic() {
                   label: "(c)",
                   question: "How to play C (131 Hz) on this string without changing T or μ",
                   solutionSteps: (
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                       <p>
-                        v unchanged (depends only on T and μ). Change effective L by pressing a fret:
+                        <strong>Insight: wave speed depends only on T and μ, not L.</strong>
+                        So the only knob we have is L (the length of vibrating string from
+                        nut/fret to bridge). Pressing down on a fret shortens the
+                        vibrating segment.
                       </p>
-                      <p>L_new = v/(2·f_new) = 142.56/(2·131) = 142.56/262</p>
+                      <p>
+                        v stays at 142.56 m/s. For the new fundamental at 131 Hz:
+                      </p>
+                      <Eq>L_new = v / (2 · f_new) = 142.56 / (2 · 131) = 142.56 / 262 ≈ 0.544 m</Eq>
+                      <p>
+                        So the player presses a fret that leaves 54.4 cm of string
+                        vibrating — the fret is at 0.648 − 0.544 ≈ 10.4 cm from the
+                        nut (or equivalently 54.4 cm from the bridge).
+                      </p>
                     </div>
                   ),
                   answer: { value: "L_new ≈ 0.544 m (fret ≈ 10.4 cm from bridge)" },
@@ -633,29 +893,62 @@ export default function WavesMusic() {
                   label: "(a)",
                   question: "Which sketch is the fundamental node pattern? (Label 'A')",
                   solutionSteps: (
-                    <p>
-                      Closed-open fundamental: NODE at the closed end, ANTINODE at the open end.
-                      Quarter-wavelength fits (L = λ/4). Look for the sketch with one node and one
-                      antinode.
-                    </p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Boundary conditions are different at the two ends.</strong>
+                        At the closed end (mouthpiece reed), the air can't move
+                        longitudinally — that's a displacement <strong>node</strong>. At
+                        the open end (bell), the air moves freely — that's an
+                        <strong> antinode</strong>.
+                      </p>
+                      <p>
+                        The simplest pattern matching node–antinode at the two ends is a
+                        quarter-wave: the air goes from zero displacement at the reed up
+                        to maximum displacement at the bell. So L = λ/4 for the
+                        fundamental — quarter, not half. That's why a saxophone of a given
+                        length sounds an octave below an open-open pipe of the same
+                        length.
+                      </p>
+                    </div>
                   ),
                   answer: { value: "Node (closed) — Antinode (open), 1 quarter-wavelength" },
                 },
                 {
                   label: "(b)",
                   question: "Cavity length L to produce B♭ (116.5 Hz) fundamental",
-                  solutionSteps: <p>L = v/(4f) = 345/(4·116.5) = 345/466</p>,
+                  solutionSteps: (
+                    <div className="space-y-2">
+                      <p>
+                        For closed-open pipe, fundamental: L = λ/4, with v = f·λ giving
+                        f = v/(4L), or:
+                      </p>
+                      <Eq>L = v / (4 f) = 345 / (4 · 116.5) = 345 / 466 ≈ 0.740 m</Eq>
+                      <p>
+                        About 74 cm — close to the actual length of an alto sax body.
+                      </p>
+                    </div>
+                  ),
                   answer: { value: "L ≈ 0.740", unit: "m" },
                 },
                 {
                   label: "(c)",
                   question: "To play one octave higher (twice the frequency), what opens?",
                   solutionSteps: (
-                    <p>
-                      The <strong>octave key</strong> opens, effectively halving the resonant
-                      length so f' = 2f. (Note: simply opening more tone holes shortens the cavity
-                      gradually but the octave key creates a discrete jump.)
-                    </p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Why this is tricky for closed-open pipes.</strong> A
+                        closed-open pipe has only odd harmonics (n = 1, 3, 5, ...), so
+                        you can't just overblow to the n=2 mode — that mode doesn't
+                        exist. The natural overtone is the n=3 mode at 3·f₁, which is
+                        an octave + a fifth above f₁ (not a clean octave).
+                      </p>
+                      <p>
+                        <strong>The octave key</strong> opens a small register hole that
+                        forces the air column to behave as if it's half its original
+                        length. With a halved L, f₁ doubles — exactly one octave up.
+                        It's a clever piece of acoustic engineering.
+                      </p>
+                    </div>
                   ),
                   answer: { value: "Open the octave key" },
                 },
@@ -663,10 +956,15 @@ export default function WavesMusic() {
                   label: "(d)",
                   question: "Node pattern for the new (octave) note (label 'D')",
                   solutionSteps: (
-                    <p>
-                      Same closed-open fundamental pattern (Node — Antinode), just half the length.
-                      So the look is same node-count, smaller spatial extent.
-                    </p>
+                    <div className="space-y-2">
+                      <p>
+                        After the octave key opens, the effective cavity is half as long
+                        but its boundaries are still closed at the reed and open at the
+                        bell. So the fundamental of the shortened cavity has the same
+                        node–antinode pattern, just compressed into half the physical
+                        space.
+                      </p>
+                    </div>
                   ),
                   answer: { value: "Same pattern (1 node + 1 antinode), half the length" },
                 },
@@ -687,9 +985,22 @@ export default function WavesMusic() {
                   label: "(a)",
                   question: "Fundamental frequency (formal answer)",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>For a closed pipe, successive overtones differ by 2f₁:</p>
-                      <p>2f₁ = 320 − 280 = 40 → f₁ = 20 Hz</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Recall: closed pipes only have odd harmonics.</strong>
+                        f_n = n·f₁ where n = 1, 3, 5, 7, ... So consecutive allowed
+                        frequencies differ by 2f₁ — for example 3f₁ and 5f₁ are 2f₁
+                        apart, 5f₁ and 7f₁ are 2f₁ apart, and so on.
+                      </p>
+                      <p>
+                        If 280 Hz and 320 Hz really were "successive overtones", their
+                        difference equals 2·f₁:
+                      </p>
+                      <Eq>2 f₁ = 320 − 280 = 40   →   f₁ = 20 Hz</Eq>
+                      <p>
+                        That's the answer the problem <em>wants</em>. (It will turn out
+                        to be inconsistent — see part (c).)
+                      </p>
                     </div>
                   ),
                   answer: { value: "f₁ = 20 Hz (if the problem were valid)" },
@@ -697,21 +1008,39 @@ export default function WavesMusic() {
                 {
                   label: "(b)",
                   question: "Length of the organ pipe",
-                  solutionSteps: <p>L = v/(4f₁) = 345/(4·20) = 345/80</p>,
+                  solutionSteps: (
+                    <div className="space-y-2">
+                      <p>
+                        Closed-open pipe fundamental: L = λ/4 = v/(4 f₁). Plug in v = 345
+                        m/s and f₁ = 20 Hz:
+                      </p>
+                      <Eq>L = 345 / (4 · 20) = 345 / 80 = 4.31 m</Eq>
+                    </div>
+                  ),
                   answer: { value: "L = 4.31 m" },
                 },
                 {
                   label: "(c)",
                   question: "Why is the problem flawed?",
                   solutionSteps: (
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                       <p>
-                        For closed pipe: f_n = n·f₁ for ODD n only. With f₁ = 20, valid frequencies
-                        are 20, 60, 100, 140, 180, 220, 260, <strong>300</strong>, 340, ...
+                        <strong>Check whether 280 and 320 are actually valid harmonics of
+                        a 20 Hz closed pipe.</strong> The allowed odd-multiple
+                        frequencies are:
+                      </p>
+                      <Eq>20, 60, 100, 140, 180, 220, 260, 300, 340, 380, 420, ...   (only odd n)</Eq>
+                      <p>
+                        Now check the given numbers. 280 / 20 = <strong>14</strong> — an
+                        even multiple, so 280 Hz is NOT in the allowed list. Likewise 320
+                        / 20 = <strong>16</strong> — also even, also not allowed.
                       </p>
                       <p>
-                        But 280 = 14·20 (even multiple — not allowed!). And 320 = 16·20 (also even
-                        multiple). Neither is a valid closed-pipe overtone.
+                        <strong>Conclusion:</strong> the professor's two "successive
+                        overtones" are mathematically self-consistent (their difference
+                        gives a 20 Hz fundamental), but neither 280 nor 320 is a real
+                        closed-pipe harmonic of 20 Hz. So the scenario can't actually
+                        exist for a closed pipe.
                       </p>
                     </div>
                   ),
@@ -736,9 +1065,24 @@ export default function WavesMusic() {
                   label: "(a)",
                   question: "Required distance r₂",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>20 dB drop ⇒ I₂/I₁ = 10⁻². With I ∝ 1/r²:</p>
-                      <p>(r₁/r₂)² = 10⁻² → r₁/r₂ = 0.1 → r₂ = 10·r₁ = 10·10</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Decibels are logarithmic.</strong> Sound intensity level
+                        β = 10·log₁₀(I/I₀), so a drop of Δβ dB corresponds to a
+                        multiplicative ratio I₂/I₁ = 10^(Δβ/10). For Δβ = −20 dB:
+                      </p>
+                      <Eq>I₂ / I₁ = 10^(−20/10) = 10⁻² = 0.01</Eq>
+                      <p>
+                        <strong>For a point source in free space, intensity falls off as
+                        1/r²</strong> (the energy spreads over a sphere of area 4πr²). So:
+                      </p>
+                      <Eq>I₂ / I₁ = (r₁ / r₂)²   →   (r₁ / r₂)² = 0.01</Eq>
+                      <Eq>r₁ / r₂ = √0.01 = 0.1   →   r₂ = 10 · r₁ = 10 · 10 = 100 m</Eq>
+                      <p>
+                        <strong>Useful rule of thumb:</strong> every 6 dB drop ≈ doubling
+                        the distance; every 20 dB drop = ten times the distance. We
+                        wanted 20 dB, so we move out by a factor of 10.
+                      </p>
                     </div>
                   ),
                   answer: { value: "r₂ = 100 m" },
@@ -761,10 +1105,38 @@ export default function WavesMusic() {
                   label: "(a)",
                   question: "Frequency the squid hears",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Sub (source) moves toward squid: denominator gets minus.</p>
-                      <p>Squid (observer) moves AWAY from sub: numerator gets minus.</p>
-                      <p>f_squid = 12000·(1450 − 20)/(1450 − 15) = 12000·1430/1435</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>The Doppler formula:</strong>
+                      </p>
+                      <Eq>f_observed = f_emitted · (v ± v_obs) / (v ∓ v_src)</Eq>
+                      <p>
+                        Sign convention: the upper sign in each pair (+ in numerator, −
+                        in denominator) corresponds to <em>approach</em>; the lower sign
+                        corresponds to <em>recession</em>. Approach raises pitch,
+                        recession lowers it.
+                      </p>
+                      <p>
+                        <strong>Set up the geometry.</strong> Both move leftward in the
+                        same direction. The submarine (the source) moves at 15 m/s
+                        chasing the squid — that's <em>toward</em> the squid, so source
+                        is approaching. The squid (observer) moves at 20 m/s away from
+                        the sub (faster, so escaping) — observer is receding.
+                      </p>
+                      <p>
+                        Source approaches → use minus in the denominator (smaller
+                        denominator = higher f). Observer recedes → use minus in the
+                        numerator (smaller numerator = lower f). The two effects partly
+                        compensate:
+                      </p>
+                      <Eq>f_squid = f_emit · (v − v_obs) / (v − v_src)</Eq>
+                      <Eq>f_squid = 12000 · (1450 − 20) / (1450 − 15) = 12000 · 1430 / 1435</Eq>
+                      <Eq>f_squid ≈ 12000 · 0.99652 ≈ 11,958.2 Hz</Eq>
+                      <p>
+                        Net effect: the squid hears the sonar at a <em>slightly lower</em>
+                        pitch than emitted, because the squid is escaping faster than the
+                        sub is closing in (20 vs 15 m/s).
+                      </p>
                     </div>
                   ),
                   answer: { value: "f_squid ≈ 11,958.2", unit: "Hz" },
@@ -773,11 +1145,24 @@ export default function WavesMusic() {
                   label: "(b)",
                   question: "Frequency of the reflection received back at the sub",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Now squid is the source (re-emitting at f_squid), sub is the observer.</p>
-                      <p>Squid (source) moves AWAY from sub: denominator gets plus.</p>
-                      <p>Sub (observer) moves TOWARD squid: numerator gets plus.</p>
-                      <p>f_sub = 11958.2·(1450 + 15)/(1450 + 20) = 11958.2·1465/1470</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Reflection problems require Doppler twice.</strong> First
+                        the sub-to-squid trip (part a). Now the squid acts as a source
+                        re-emitting whatever it just heard (f_squid ≈ 11958.2 Hz), and the
+                        sub becomes the observer.
+                      </p>
+                      <p>
+                        <strong>Re-evaluate the geometry for the return trip.</strong>
+                        The squid is moving away from the sub (the sound now travels back
+                        toward the sub, but the squid is fleeing) → source recedes, so
+                        denominator gets a plus. The sub is moving toward the squid (the
+                        sub is also chasing) → observer approaches, so numerator gets a
+                        plus.
+                      </p>
+                      <Eq>f_sub = f_squid · (v + v_obs) / (v + v_src)</Eq>
+                      <Eq>f_sub = 11958.2 · (1450 + 15) / (1450 + 20) = 11958.2 · 1465 / 1470</Eq>
+                      <Eq>f_sub ≈ 11958.2 · 0.99660 ≈ 11,917.5 Hz</Eq>
                     </div>
                   ),
                   answer: { value: "f_sub ≈ 11,917.5", unit: "Hz" },
@@ -785,7 +1170,24 @@ export default function WavesMusic() {
                 {
                   label: "(c)",
                   question: "Beat frequency at the sub (between emitted and returned)",
-                  solutionSteps: <p>Δf = |12000 − 11917.5|</p>,
+                  solutionSteps: (
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Beats arise when two close-frequency waves interfere.</strong>
+                        Their amplitudes add and subtract at a rate equal to the
+                        difference of their frequencies. The sub hears its own emitted
+                        12000 Hz and the reflected 11917.5 Hz simultaneously — beating
+                        at:
+                      </p>
+                      <Eq>Δf = |f_emit − f_return| = |12000 − 11917.5| ≈ 82.5 Hz</Eq>
+                      <p>
+                        Sonar systems use exactly this beat frequency to compute the
+                        radial speed difference between the sub and its target. From Δf
+                        the sub can back out the squid's relative speed, even without
+                        knowing the squid's exact position.
+                      </p>
+                    </div>
+                  ),
                   answer: { value: "Δf ≈ 82.5", unit: "Hz" },
                 },
               ]}

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { ChevronRight, Zap, BookOpen, Brain } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
+import TodayPlan from "@/components/cse114/TodayPlan";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -16,55 +17,61 @@ export default function Home() {
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
               <Zap className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">Day 1: Dynamics</h1>
+            <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+              Study Hub <span className="text-orange-600">· CSE 114</span>
+            </h1>
           </div>
-          <nav className="hidden md:flex gap-8">
-            <a href="#fundamentals" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
-              Fundamentals
-            </a>
-            <a href="#concepts" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
-              Concepts
-            </a>
-            <a href="#exercises" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
-              Exercises
+          <nav className="hidden md:flex gap-6 items-center">
+            <Link href="/cse114/learn">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-600 cursor-pointer">Learn</span>
+            </Link>
+            <Link href="/cse114">
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-600 cursor-pointer">Exam Trainer</span>
+            </Link>
+            <a href="#archives" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-600 transition">
+              Archives
             </a>
           </nav>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-32 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-        <div className="container grid md:grid-cols-2 gap-12 items-center">
-          {/* Left: Text Content */}
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
-                Master <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Dynamics</span> in 1 Day
-              </h1>
-              <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-                Learn Newton's Laws, inclined planes, friction, and coupled systems through interactive visualizations and hands-on problem-solving.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-4 pt-4">
-              <Link href="/inclined-planes">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg rounded-lg flex items-center gap-2">
-                  Start Learning <ChevronRight className="w-5 h-5" />
-                </Button>
+      {/* TODAY'S PLAN — primary dashboard. Replaces the static CSE 114 hero. */}
+      <section className="py-10 md:py-14 bg-gradient-to-br from-orange-50 via-white to-rose-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <div className="container max-w-5xl">
+          <TodayPlan />
+          <div className="mt-6 grid sm:grid-cols-4 gap-3">
+            {[
+              { label: "Learn", desc: "Chapters", href: "/cse114/learn", color: "#4f46e5" },
+              { label: "Exam Sim", desc: "Practice exams", href: "/cse114", color: "#ea580c" },
+              { label: "Drill traps", desc: "Logged mistakes", href: "/cse114/drill", color: "#16a34a" },
+              { label: "Trap list", desc: "Browse & master", href: "/cse114/traps", color: "#e11d48" },
+            ].map((c) => (
+              <Link key={c.label} href={c.href}>
+                <Card
+                  className="p-4 h-full hover:shadow-lg transition-shadow cursor-pointer"
+                  style={{ borderTop: `3px solid ${c.color}` }}
+                >
+                  <div className="text-base font-bold text-gray-900 dark:text-white">{c.label}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{c.desc}</div>
+                </Card>
               </Link>
-              <Button variant="outline" className="px-8 py-6 text-lg rounded-lg">
-                View Concepts
-              </Button>
-            </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          {/* Right: Hero Image */}
-          <div className="relative h-96 md:h-full">
-            <img
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663179912018/VoYKQBRGZeBhQvDPXYbGxP/hero-forces-UXitpJ2JxsH6XWoxudpzgQ.webp"
-              alt="Force vectors visualization"
-              className="w-full h-full object-contain drop-shadow-lg"
-            />
-          </div>
+      {/* ===== ARCHIVES — previous courses ===== */}
+      <section id="archives" className="py-10 bg-gray-100 dark:bg-slate-950 border-y border-gray-200 dark:border-slate-800">
+        <div className="container text-center">
+          <span className="inline-block bg-gray-700 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wider mb-2">
+            ARCHIVES
+          </span>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Past courses — PHY 131 · ESE 123 · AMS 161
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mt-1">
+            Spring 2026 study tools, kept for reference. CSE 114 is the active course above.
+          </p>
         </div>
       </section>
 
@@ -433,6 +440,168 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ESE 123 Final Exam Prep */}
+      <section className="py-20 bg-gradient-to-br from-amber-50 via-emerald-50 to-cyan-50 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900">
+        <div className="container">
+          <div className="text-center mb-12">
+            <span className="inline-block bg-emerald-600 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wider mb-4">
+              ESE 123 · FINAL EXAM PREP
+            </span>
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Electrical & Computer Engineering
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              8 topic clusters covering all 26 practice-exam questions. Built from
+              your project firmware, lab manuals, and pre-labs. Includes a timed mock
+              exam with auto-grading and topic-by-topic accuracy.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-3 mb-10 max-w-5xl mx-auto">
+            {[
+              { label: "Bitwise", color: "#2563eb", route: "/ee/bitwise-numbers" },
+              { label: "uC I/O", color: "#c026d3", route: "/ee/microcontroller-io" },
+              { label: "DC Circuits", color: "#10b981", route: "/ee/dc-circuits" },
+              { label: "Lab Eq.", color: "#06b6d4", route: "/ee/lab-equipment" },
+              { label: "USB-C", color: "#f59e0b", route: "/ee/usb-c-power" },
+              { label: "ADC", color: "#ef4444", route: "/ee/adc" },
+              { label: "SPICE", color: "#0ea5e9", route: "/ee/spice-simulation" },
+              { label: "Op-Amps", color: "#7c3aed", route: "/ee/op-amps" },
+            ].map((t) => (
+              <Link key={t.label} href={t.route}>
+                <Card
+                  className="p-3 text-center hover:shadow-md transition-shadow cursor-pointer h-full"
+                  style={{ borderTop: `3px solid ${t.color}` }}
+                >
+                  <div className="text-xs text-gray-600 dark:text-gray-300 font-semibold" style={{ color: t.color }}>
+                    {t.label}
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center flex flex-wrap gap-3 justify-center">
+            <Link href="/ee">
+              <Button className="bg-gradient-to-r from-amber-500 via-emerald-500 to-cyan-500 hover:from-amber-600 hover:via-emerald-600 hover:to-cyan-600 text-white px-8 py-6 text-lg rounded-lg flex items-center gap-2">
+                Open ESE 123 Hub <ChevronRight className="w-5 h-5" />
+              </Button>
+            </Link>
+            <Link href="/ee/mock-exam">
+              <Button variant="outline" className="px-8 py-6 text-lg rounded-lg">
+                Take Mock Exam
+              </Button>
+            </Link>
+            <Link href="/ee/drill">
+              <Button variant="outline" className="px-8 py-6 text-lg rounded-lg">
+                Drill
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* AMS 161 Final Exam Prep */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-50 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900">
+        <div className="container">
+          <div className="text-center mb-12">
+            <span className="inline-block bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wider mb-4">
+              AMS 161 · FINAL EXAM PREP
+            </span>
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Applied Calculus II
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              4 chapters covering all 26 sections of Stewart's Calculus: Concepts and
+              Contexts. Typeset math, interactive Riemann/volume/series/Taylor
+              visualizers, and a printable 2-page cheat sheet.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-3 mb-10 max-w-4xl mx-auto">
+            {[
+              { label: "Ch 5 Integration", color: "#2563eb", route: "/math/integration" },
+              { label: "Ch 6 Applications", color: "#10b981", route: "/math/applications" },
+              { label: "Ch 7 Differential Eqs", color: "#f59e0b", route: "/math/diff-eq" },
+              { label: "Ch 8 Series", color: "#7c3aed", route: "/math/series" },
+            ].map((t) => (
+              <Link key={t.label} href={t.route}>
+                <Card
+                  className="p-3 text-center hover:shadow-md transition-shadow cursor-pointer h-full"
+                  style={{ borderTop: `3px solid ${t.color}` }}
+                >
+                  <div className="text-xs font-semibold" style={{ color: t.color }}>
+                    {t.label}
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center flex flex-wrap gap-3 justify-center">
+            <Link href="/math">
+              <Button className="bg-gradient-to-r from-blue-500 via-cyan-500 to-indigo-500 hover:from-blue-600 hover:via-cyan-600 hover:to-indigo-600 text-white px-8 py-6 text-lg rounded-lg flex items-center gap-2">
+                Open AMS 161 Hub <ChevronRight className="w-5 h-5" />
+              </Button>
+            </Link>
+            <Link href="/math/cheat-sheet">
+              <Button variant="outline" className="px-8 py-6 text-lg rounded-lg">
+                📄 2-Page Cheat Sheet
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Super Mock Exam — capstone challenge */}
+      <section className="py-20 bg-gradient-to-br from-red-900 via-rose-900 to-amber-900 dark:from-black dark:via-red-950 dark:to-amber-950 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-amber-500 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-red-500 rounded-full blur-3xl" />
+        </div>
+        <div className="container relative">
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="inline-block bg-white text-red-900 px-4 py-1 rounded-full text-xs font-bold tracking-wider mb-4">
+              ★ THE GAUNTLET ★
+            </span>
+            <h2 className="text-5xl font-bold text-white mb-4">
+              Super Mock Exam
+            </h2>
+            <p className="text-xl text-amber-100 max-w-2xl mx-auto mb-3 leading-relaxed">
+              The whole program from A to Z — Physics + EE + Calculus II, midterm + finals
+              — ranked by difficulty.
+            </p>
+            <p className="text-lg text-white/80 max-w-2xl mx-auto mb-8 italic">
+              30 problems across 4 tiers. Tier 1 conceptual checks → Tier 4 cross-topic
+              monsters. Solve them all and you've mastered the program.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto mb-8">
+              <div className="bg-white/10 backdrop-blur rounded-lg p-3 border border-white/20">
+                <div className="text-2xl font-bold text-emerald-300">Tier 1</div>
+                <div className="text-xs text-white/80">8 quick concept checks</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur rounded-lg p-3 border border-white/20">
+                <div className="text-2xl font-bold text-sky-300">Tier 2</div>
+                <div className="text-xs text-white/80">10 single-step calcs</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur rounded-lg p-3 border border-white/20">
+                <div className="text-2xl font-bold text-amber-300">Tier 3</div>
+                <div className="text-xs text-white/80">8 multi-step problems</div>
+              </div>
+              <div className="bg-white/10 backdrop-blur rounded-lg p-3 border border-white/20">
+                <div className="text-2xl font-bold text-red-300">Tier 4</div>
+                <div className="text-xs text-white/80">4 final-boss monsters</div>
+              </div>
+            </div>
+            <Link href="/super-mock-exam">
+              <Button className="bg-white hover:bg-amber-100 text-red-900 px-10 py-7 text-xl rounded-lg font-bold shadow-2xl flex items-center gap-2 mx-auto">
+                Enter the Gauntlet <ChevronRight className="w-6 h-6" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Exercise Bank & Resources */}
       <section className="py-20 bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-800 dark:to-slate-900">
         <div className="container">
@@ -481,11 +650,18 @@ export default function Home() {
               <p className="text-gray-600 dark:text-gray-300 mb-4">
                 Complete reference guide with all formulas, problem-solving strategies, and key insights organized by topic.
               </p>
-              <Link href="/formula-sheet">
-                <Button variant="ghost" className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900 flex items-center gap-2">
-                  View Reference <ChevronRight className="w-4 h-4" />
-                </Button>
-              </Link>
+              <div className="flex flex-wrap gap-2">
+                <Link href="/formula-sheet">
+                  <Button variant="ghost" className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900 flex items-center gap-2">
+                    View Reference <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+                <Link href="/cheat-sheet">
+                  <Button variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900 flex items-center gap-2">
+                    📄 2-Page Cheat Sheet (Physics + EE)
+                  </Button>
+                </Link>
+              </div>
             </Card>
           </div>
         </div>

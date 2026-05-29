@@ -52,3 +52,15 @@ Other plugins: `@vitejs/plugin-react`, `@tailwindcss/vite`, `@builder.io/vite-pl
 
 ### Design intent
 `ideas.md` is the design brief ("Interactive Scientific Clarity"): two-column asymmetric layout (60% diagram / 40% controls+explanation), color-coded force vectors, sliders driving real-time FBD updates, sequenced force animations (gravity → friction → tension). Match this aesthetic when adding new concept pages — it is the reason for the force-color tokens and the SVG-based diagrams.
+
+## Pedagogy — explain, don't tell
+
+This is a study tool, not a reference card. Every formula card and every step of every worked example must lead with the **plain-language idea** before the formal compression. The 5 failure modes to avoid:
+
+1. **Defining terms in their own language.** Replace `meaning: "wave number"` with `meaning: "how squished the wave is in space — bigger k means crests are closer together (rad/m)"`. Units in parens at the end, not as the whole definition.
+2. **Stating rules without reasons.** "Closed-open pipes have only odd harmonics" must be paired with the physical *why* ("closed end forces the air still, open end lets it move freely; that asymmetry rules out even harmonics"). Same for sign conventions, boundary rules, hand rules.
+3. **Memorizing traps instead of dissolving them.** Sign conventions tied to physical reality you can sanity-check ("approaching makes pitch go up — pick whatever signs make f' bigger") beat four-things-to-flip rules.
+4. **No mental images.** Anchor every concept to something physical — a wiggling rope, an ambulance, a guitar string.
+5. **Disconnected facts instead of connected ideas.** `v = ω/k = fλ` is "speed = (how fast it wiggles) × (how long one wiggle is)." Translate first, compress second.
+
+**Worked-example structure**: every step's body opens with `<Why>` (concept setup), then `<Eq>` (formal computation), then a closing `<Why>` that interprets the number physically (sanity-check, unit check, "what does this mean"). The `<Why>` and `<Eq>` helpers live in `client/src/components/midterm/WorkedExample.tsx`. The reference exemplar is `client/src/pages/WavesMusic.tsx` — match its tone when writing or rewriting study content.

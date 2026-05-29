@@ -35,6 +35,29 @@ export default function FormulaSheet() {
             Day 1: Dynamics & Forces
           </h3>
 
+          {/* Linear Kinematics (constant acceleration) */}
+          <Card className="p-6 mb-6 border-l-4 border-l-cyan-600">
+            <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Linear Kinematics (constant a)</h4>
+            <div className="space-y-4 text-gray-700 dark:text-gray-300">
+              <div className="bg-cyan-50 dark:bg-cyan-900 p-4 rounded">
+                <p className="font-mono font-bold text-lg mb-2">v = v₀ + a·t</p>
+                <p className="text-sm">Velocity grows linearly with time at constant acceleration.</p>
+              </div>
+              <div className="bg-cyan-50 dark:bg-cyan-900 p-4 rounded">
+                <p className="font-mono font-bold text-lg mb-2">x = x₀ + v₀·t + ½·a·t²</p>
+                <p className="text-sm">Position from initial position, velocity, and uniform acceleration.</p>
+              </div>
+              <div className="bg-cyan-50 dark:bg-cyan-900 p-4 rounded">
+                <p className="font-mono font-bold text-lg mb-2">v² = v₀² + 2·a·Δx</p>
+                <p className="text-sm">Time-free relation: use when t isn't given or asked.</p>
+              </div>
+              <div className="bg-cyan-50 dark:bg-cyan-900 p-4 rounded">
+                <p className="font-mono font-bold text-lg mb-2">x = ½·(v₀ + v)·t</p>
+                <p className="text-sm">Average-velocity form: convenient when both endpoints' velocities are known.</p>
+              </div>
+            </div>
+          </Card>
+
           {/* Newton's Laws */}
           <Card className="p-6 mb-6 border-l-4 border-l-blue-600">
             <h4 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Newton's Laws</h4>

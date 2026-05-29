@@ -4,7 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
-import { WorkedExample } from "@/components/midterm/WorkedExample";
+import { WorkedExample, Eq, Why } from "@/components/midterm/WorkedExample";
 import { PracticeProblem } from "@/components/midterm/PracticeProblem";
 import { FormulaBlock } from "@/components/midterm/FormulaBlock";
 
@@ -389,18 +389,36 @@ export default function RotationalKinematics() {
                 </div>
               }
               variables={[
-                { symbol: "ω₀", meaning: "initial angular velocity", units: "rad/s" },
-                { symbol: "ω", meaning: "angular velocity at time t", units: "rad/s" },
-                { symbol: "α", meaning: "angular acceleration (constant)", units: "rad/s²" },
-                { symbol: "θ", meaning: "angle swept (radians)", units: "rad" },
+                {
+                  symbol: "ω₀",
+                  meaning: "how fast it's spinning at the start (radians per second)",
+                  units: "rad/s",
+                },
+                {
+                  symbol: "ω",
+                  meaning: "how fast it's spinning at time t",
+                  units: "rad/s",
+                },
+                {
+                  symbol: "α",
+                  meaning:
+                    "how quickly the spin rate is changing — bigger α = spinning up (or slowing down) faster. Must be CONSTANT for these formulas to apply",
+                  units: "rad/s²",
+                },
+                {
+                  symbol: "θ",
+                  meaning:
+                    "total angle swept (in radians — 2π per full revolution)",
+                  units: "rad",
+                },
                 { symbol: "t", meaning: "elapsed time", units: "s" },
               ]}
-              whenToUse="Whenever α is constant. Identical to linear kinematics — just substitute symbols."
+              whenToUse="These four are word-for-word the linear kinematics equations with x→θ, v→ω, a→α. Same physics, same algebra — only the symbols change. Pick the equation that has the three quantities you know plus the one you want, exactly like you did in Calc-I-style kinematics."
             />
 
             <FormulaBlock
               accentColor={ACCENT}
-              name="Tangential bridges"
+              name="Tangential bridges (linear ↔ angular)"
               formula={
                 <div className="space-y-2">
                   <div>
@@ -413,12 +431,31 @@ export default function RotationalKinematics() {
                 </div>
               }
               variables={[
-                { symbol: "r", meaning: "distance from rotation axis", units: "m" },
-                { symbol: "v_t", meaning: "tangential speed of that point", units: "m/s" },
-                { symbol: "a_t", meaning: "tangential acceleration of that point", units: "m/s²" },
-                { symbol: "s", meaning: "arc length (linear distance traveled)", units: "m" },
+                {
+                  symbol: "r",
+                  meaning:
+                    "distance from the rotation axis to the point you care about — the lever arm",
+                  units: "m",
+                },
+                {
+                  symbol: "v_t",
+                  meaning:
+                    "linear speed of that point along the circle it's tracing",
+                  units: "m/s",
+                },
+                {
+                  symbol: "a_t",
+                  meaning: "linear acceleration along the tangent direction",
+                  units: "m/s²",
+                },
+                {
+                  symbol: "s",
+                  meaning:
+                    "arc length swept — linear distance traveled along the circle",
+                  units: "m",
+                },
               ]}
-              whenToUse="When you need to translate between an angular quantity and the linear motion of a specific point on the rotating body."
+              whenToUse="A spinning object has ONE ω, but every point on it has its own linear speed depending on its distance from the axis. Outer points move faster than inner ones. These three formulas convert: how fast is the rim moving (v = rω)? How long an arc does it trace (s = rθ)? Use this whenever a problem mixes angular language ('the disk spins at 60 rpm') with linear language ('how fast is the edge moving?')."
             />
 
             <FormulaBlock
@@ -426,10 +463,18 @@ export default function RotationalKinematics() {
               name="rpm ↔ rad/s"
               formula={<div>ω [rad/s] = rpm × 2π/60</div>}
               variables={[
-                { symbol: "rpm", meaning: "revolutions per minute" },
-                { symbol: "2π/60", meaning: "= π/30 ≈ 0.1047 conversion factor" },
+                {
+                  symbol: "rpm",
+                  meaning:
+                    "revolutions per minute — what record players, drills, and engines are typically labeled with",
+                },
+                {
+                  symbol: "2π/60",
+                  meaning:
+                    "the conversion factor: 2π radians per revolution, divided by 60 seconds per minute (= π/30 ≈ 0.1047)",
+                },
               ]}
-              whenToUse="Always — every problem gives you rpm and every formula needs rad/s."
+              whenToUse="Real-world problems quote rotation speeds in rpm; physics formulas all need rad/s. Don't trust 'rpm × 0.1' — that's a 5% error that will tank an exam answer. Use 2π/60 = π/30 every time. Common values worth memorizing: 60 rpm = 2π rad/s, 1800 rpm = 60π ≈ 188.5 rad/s."
             />
 
             <FormulaBlock
@@ -437,9 +482,14 @@ export default function RotationalKinematics() {
               name="# of revolutions"
               formula={<div># turns = θ / (2π)</div>}
               variables={[
-                { symbol: "θ", meaning: "total angle swept", units: "rad" },
+                {
+                  symbol: "θ",
+                  meaning:
+                    "total angle swept (in radians, since formulas always use radians)",
+                  units: "rad",
+                },
               ]}
-              whenToUse="When the question asks 'how many times did it spin' — convert from radians."
+              whenToUse="The exam question often asks 'how many times did the wheel turn before stopping' rather than the angle in radians. Convert at the END: divide by 2π. The intuition: 2π radians is one full lap; whatever θ you got, divide by that to count laps."
             />
           </div>
         </section>
@@ -461,54 +511,175 @@ export default function RotationalKinematics() {
             }
             steps={[
               {
-                heading: "Convert 200 rpm to rad/s",
+                heading: "Set up: convert rpm to rad/s before doing anything",
                 body: (
-                  <p>
-                    ω_f = 200 × 2π/60 = 200 × 0.1047 = <strong>20.94 rad/s</strong>
-                  </p>
+                  <>
+                    <Why>
+                      Every kinematic formula here (ω = ω₀ + αt, θ = ½αt², etc.) was derived
+                      assuming angles in <strong>radians</strong>. The problem hands us 200 rpm
+                      — "revolutions per minute" — which is a count of full turns per 60 seconds.
+                      One full turn is 2π radians, so to convert we multiply by 2π (to get
+                      radians per minute) and divide by 60 (to convert minutes to seconds).
+                      If we skip this step and plug 200 directly into the formulas, every answer
+                      that follows will be off by a factor of 2π/60 ≈ 0.1047.
+                    </Why>
+                    <Eq>ω_f = 200 rpm × (2π rad / 1 rev) × (1 min / 60 s)</Eq>
+                    <Eq>ω_f = 200 × 0.1047 = 20.94 rad/s</Eq>
+                    <Why>
+                      Read the answer back as a sentence: "20.94 radians of angle are swept by
+                      every blade every second once it's at full speed." That's roughly 3.3 full
+                      turns per second.
+                    </Why>
+                  </>
                 ),
               },
               {
-                heading: "(a) Angular acceleration α",
-                body: <p>ω = ω₀ + αt → α = (20.94 − 0) / 20</p>,
+                heading: "(a) Angular acceleration α — how fast the spin rate is climbing",
+                body: (
+                  <>
+                    <Why>
+                      The propeller starts at rest (ω₀ = 0) and ends at ω_f = 20.94 rad/s. It
+                      reaches that speed after t = 20 s of steady spin-up. Since the angular
+                      velocity changes <em>linearly</em> with time when α is constant, we use
+                      the rotational analog of v = v₀ + at:
+                    </Why>
+                    <Eq>ω = ω₀ + αt   →   α = (ω − ω₀) / t</Eq>
+                    <Why>
+                      Plugging in our two endpoints — final ω = 20.94, initial ω₀ = 0, elapsed
+                      time t = 20 s:
+                    </Why>
+                    <Eq>α = (20.94 − 0) / 20 = 1.047 rad/s²</Eq>
+                    <Why>
+                      Physically, this means the propeller gains roughly 1.05 rad/s of spin
+                      every second of operation. After 1 s it's at 1.05 rad/s; after 10 s it's
+                      at 10.5 rad/s; after 20 s it's at 20.94 rad/s — exactly what the problem
+                      stated.
+                    </Why>
+                  </>
+                ),
                 result: { label: "α", value: "1.047 rad/s² (≈ π/3)", color: "cyan" },
               },
               {
-                heading: "(b) Turns in 20 s",
+                heading: "(b) How many full revolutions during the 20 s spin-up",
                 body: (
-                  <p>
-                    θ = ω₀t + ½αt² = 0 + ½·(1.047)·(20)² = 209.4 rad. # turns = 209.4 / (2π).
-                  </p>
+                  <>
+                    <Why>
+                      The question asks for <em>turns</em>, but our kinematics formulas only
+                      give us θ in <strong>radians</strong>. Strategy: first compute the total
+                      angle swept (θ), then divide by 2π to convert radians-of-angle into
+                      number-of-revolutions.
+                    </Why>
+                    <Why>
+                      For total angle, we use the rotational analog of x = x₀ + v₀t + ½at². The
+                      ω₀t term drops out because the propeller starts from rest:
+                    </Why>
+                    <Eq>θ = ω₀t + ½αt²   →   θ = 0 + ½ · (1.047) · (20)²</Eq>
+                    <Eq>θ = 0.5 · 1.047 · 400 = 209.4 rad</Eq>
+                    <Why>
+                      That's 209.4 radians of total angle. Each full revolution is 2π ≈ 6.283
+                      rad, so:
+                    </Why>
+                    <Eq># turns = θ / (2π) = 209.4 / 6.283 ≈ 33.3 revolutions</Eq>
+                    <Why>
+                      Sanity check: average angular velocity during spin-up is (0 + 20.94)/2 =
+                      10.47 rad/s. Over 20 s that's 209.4 rad — same answer. ✓
+                    </Why>
+                  </>
                 ),
                 result: { label: "# turns", value: "33.3 turns", color: "cyan" },
               },
               {
-                heading: "(c) ω where tip exceeds speed of sound",
+                heading: "(c) Spin rate at which the blade tip breaks the sound barrier",
                 body: (
-                  <p>
-                    Tip is at r = 3 m. v_t = rω → 345 = 3·ω → ω = 345/3.
-                  </p>
+                  <>
+                    <Why>
+                      Here we need the <strong>radius bridge</strong>: a point at radius r on a
+                      rotating body has tangential (linear) speed v_t = rω. The tip of a blade
+                      sits at r = L = 3 m from the rotation axis (the hub). We want to know the
+                      angular velocity ω at which that linear tip-speed equals 345 m/s, the
+                      speed of sound in air.
+                    </Why>
+                    <Eq>v_t = rω   →   ω = v_t / r</Eq>
+                    <Why>
+                      Solve for ω with v_t = 345 m/s and r = 3 m:
+                    </Why>
+                    <Eq>ω_sonic = 345 / 3 = 115 rad/s</Eq>
+                    <Why>
+                      So the blade tip hits Mach 1 once the propeller is spinning at 115 rad/s
+                      (≈ 1098 rpm). Notice that ω is the same everywhere on the rigid blade —
+                      but v_t depends on r. The hub barely moves while the tip is supersonic.
+                    </Why>
+                  </>
                 ),
                 result: { label: "ω_sonic", value: "115 rad/s", color: "cyan" },
               },
               {
-                heading: "(d) Time at which that ω is reached",
-                body: <p>ω = αt → t = 115 / 1.047</p>,
+                heading: "(d) When does that happen, in seconds from start?",
+                body: (
+                  <>
+                    <Why>
+                      We just computed the threshold ω_sonic = 115 rad/s. We already know α =
+                      1.047 rad/s² (constant) and ω₀ = 0. Reuse the same formula from part (a),
+                      but now solve for t instead of α:
+                    </Why>
+                    <Eq>ω = ω₀ + αt   →   t = (ω − ω₀) / α</Eq>
+                    <Eq>t_sonic = (115 − 0) / 1.047 ≈ 109.8 s</Eq>
+                    <Why>
+                      So if you held α constant, the tip would go supersonic about 90 s
+                      <em> after</em> the propeller reaches its rated 200 rpm. In real engines,
+                      governors prevent this — but this is exactly why high-RPM rotors must be
+                      short.
+                    </Why>
+                  </>
+                ),
                 result: { label: "t_sonic", value: "≈ 109.8 s", color: "cyan" },
               },
               {
-                heading: "(e) Moment of inertia (4 rods about end)",
+                heading: "(e) Moment of inertia I — rotational analog of mass",
                 body: (
-                  <p>
-                    For one rod about its end: I_rod = ⅓ M L² = ⅓ · 5 · 3² = 15 kg·m². Four
-                    blades total: I = 4 × 15.
-                  </p>
+                  <>
+                    <Why>
+                      Newton's 2nd law for rotation says τ = Iα. Before we can compute the
+                      torque needed to spin this thing up (part f), we need I — the body's
+                      resistance to angular acceleration. I depends on both mass <em>and</em>
+                      how that mass is distributed relative to the rotation axis.
+                    </Why>
+                    <Why>
+                      Each blade is a uniform rod of mass M = 5 kg and length L = 3 m, rotating
+                      about <strong>one end</strong> (the hub). The standard table value for a
+                      rod about its end is I_rod = ⅓ M L². (If it spun about its <em>center</em>
+                      it would be ¹/₁₂ M L² — make sure you use the correct one!)
+                    </Why>
+                    <Eq>I_one blade = ⅓ · M · L² = ⅓ · 5 · 3² = ⅓ · 5 · 9 = 15 kg·m²</Eq>
+                    <Why>
+                      The propeller has 4 identical blades, all rotating about the same axis.
+                      Moments of inertia from masses sharing one axis simply add:
+                    </Why>
+                    <Eq>I_total = 4 × I_one blade = 4 × 15 = 60 kg·m²</Eq>
+                  </>
                 ),
                 result: { label: "I", value: "60 kg·m²", color: "cyan" },
               },
               {
-                heading: "(f) Required torque (Newton's 2nd for rotation)",
-                body: <p>τ = Iα = 60 · 1.047</p>,
+                heading: "(f) Required torque — what the engine must supply",
+                body: (
+                  <>
+                    <Why>
+                      Now that we know I (the rotational mass) and α (the rotational
+                      acceleration), Newton's 2nd law for rotation gives us the net torque
+                      required to produce that acceleration. This is the rotational
+                      counterpart of F = ma:
+                    </Why>
+                    <Eq>τ = I · α</Eq>
+                    <Eq>τ = 60 kg·m² × 1.047 rad/s² ≈ 62.83 N·m</Eq>
+                    <Why>
+                      So the motor must apply roughly 63 N·m of net torque (ignoring drag) to
+                      spin this propeller from rest to 200 rpm in 20 seconds. In a real engine
+                      you'd need <em>more</em> than this to also overcome air drag on the
+                      blades.
+                    </Why>
+                  </>
+                ),
                 result: { label: "τ", value: "≈ 62.83 N·m", color: "cyan" },
               },
             ]}
@@ -544,30 +715,86 @@ export default function RotationalKinematics() {
                 label: "(a)",
                 question: "Angular acceleration α of the grindstone",
                 solutionSteps: (
-                  <div className="space-y-1">
-                    <p>ω₀ = 100 rpm = 100·2π/60 = 10.47 rad/s, ω_f = 0, t = 120 s.</p>
-                    <p>α = (ω_f − ω₀)/t = (0 − 10.47)/120</p>
+                  <div className="space-y-2">
+                    <p>
+                      <strong>What we know:</strong> the stone starts at 100 rpm and slows to
+                      a complete stop. "Stops" means the final angular velocity ω_f = 0. The
+                      time interval is given as 2 minutes, so we'll convert that to 120 s for
+                      our SI units.
+                    </p>
+                    <p>
+                      <strong>Convert rpm → rad/s</strong> (always do this first; the formulas
+                      assume radians):
+                    </p>
+                    <Eq>ω₀ = 100 rpm × (2π / 60) = 10.47 rad/s</Eq>
+                    <p>
+                      <strong>Pick the right formula.</strong> We have ω₀, ω_f, and t — and we
+                      want α. The kinematic equation that links exactly those four quantities
+                      is the rotational version of v = v₀ + at:
+                    </p>
+                    <Eq>ω_f = ω₀ + αt   →   α = (ω_f − ω₀) / t</Eq>
+                    <Eq>α = (0 − 10.47) / 120 = −0.0873 rad/s²</Eq>
+                    <p>
+                      The negative sign is important: it means α points <em>opposite</em> to
+                      ω, which is what "deceleration" looks like in vector form. The grindstone
+                      is shedding 0.087 rad/s of spin every second.
+                    </p>
                   </div>
                 ),
                 answer: { value: "α ≈ −0.0873", unit: "rad/s² (deceleration)" },
               },
               {
                 label: "(b)",
-                question: "How many turns before it stops",
+                question: "How many full revolutions before it comes to rest",
                 solutionSteps: (
-                  <div className="space-y-1">
-                    <p>θ = ½(ω₀ + ω_f)·t = ½·10.47·120 = 628.3 rad.</p>
-                    <p># turns = 628.3 / (2π).</p>
+                  <div className="space-y-2">
+                    <p>
+                      <strong>Strategy:</strong> compute the total angle swept in radians,
+                      then divide by 2π to convert to revolutions.
+                    </p>
+                    <p>
+                      Because α is constant, the average angular velocity during the slow-down
+                      is just the arithmetic mean of the start and end rates. That gives us a
+                      compact formula for total angle that doesn't need α:
+                    </p>
+                    <Eq>θ = ½ (ω₀ + ω_f) · t</Eq>
+                    <Eq>θ = ½ · (10.47 + 0) · 120 = 628.3 rad</Eq>
+                    <p>
+                      Now convert from radians to revolutions. Each full turn is 2π rad:
+                    </p>
+                    <Eq># turns = 628.3 / (2π) = 628.3 / 6.283 ≈ 100 turns</Eq>
+                    <p>
+                      Sanity check: at the average rate of (10.47 + 0)/2 = 5.24 rad/s for 120
+                      s we sweep 628 rad — same answer. ✓
+                    </p>
                   </div>
                 ),
                 answer: { value: "100 turns" },
               },
               {
                 label: "(c)",
-                question: "Moment of inertia of the grindstone",
+                question: "Moment of inertia I of the grindstone",
                 solutionSteps: (
-                  <div className="space-y-1">
-                    <p>Treat as solid disk: I = ½MR² = ½·80·(0.7)² = ½·80·0.49.</p>
+                  <div className="space-y-2">
+                    <p>
+                      <strong>What is I?</strong> It's the rotational analog of mass — how
+                      hard it is to angularly accelerate the body. The value depends on both
+                      the total mass and how that mass is distributed relative to the axis.
+                    </p>
+                    <p>
+                      A grindstone is a uniform solid disk rotating about its central axis.
+                      For that geometry the standard table entry is:
+                    </p>
+                    <Eq>I_disk = ½ · M · R²</Eq>
+                    <p>
+                      Plug in M = 80 kg and R = 0.7 m:
+                    </p>
+                    <Eq>I = ½ · 80 · (0.7)² = ½ · 80 · 0.49 = 19.6 kg·m²</Eq>
+                    <p>
+                      (If the stone were a thin hoop instead of a solid disk, I would be M·R²
+                      = 39.2 kg·m² — twice as much. Always identify the geometry before
+                      pulling a formula.)
+                    </p>
                   </div>
                 ),
                 answer: { value: "I = 19.6", unit: "kg·m²" },
@@ -576,11 +803,38 @@ export default function RotationalKinematics() {
                 label: "(d)",
                 question: "Coefficient of kinetic friction μ_k between axe and stone",
                 solutionSteps: (
-                  <div className="space-y-1">
-                    <p>The friction force at the rim provides the decelerating torque:</p>
-                    <p>τ_friction = |Iα| = 19.6 · 0.0873 = 1.711 N·m.</p>
-                    <p>Friction force at rim: f = τ/R = 1.711/0.7 = 2.444 N.</p>
-                    <p>μ_k = f / N = 2.444 / 20.</p>
+                  <div className="space-y-2">
+                    <p>
+                      <strong>Physical picture:</strong> the only thing slowing the grindstone
+                      is the kinetic friction force where the axe presses against its rim. So
+                      friction is producing the decelerating torque we already know about
+                      (from parts a and c).
+                    </p>
+                    <p>
+                      <strong>Step 1 — torque from rotational Newton's 2nd law.</strong>
+                      The net torque on the stone is τ_net = Iα. Since friction is the only
+                      torque acting, τ_friction = |Iα| (we take absolute value because we
+                      just want the magnitude here):
+                    </p>
+                    <Eq>τ_friction = |I · α| = 19.6 × 0.0873 = 1.711 N·m</Eq>
+                    <p>
+                      <strong>Step 2 — convert that torque to a friction force at the rim.</strong>
+                      The axe presses at the outer edge of the disk, so the friction force f
+                      acts at radius R = 0.7 m, perpendicular to the radius (it's tangent to
+                      the rim). The torque produced by such a force is τ = f · R:
+                    </p>
+                    <Eq>f = τ_friction / R = 1.711 / 0.7 = 2.444 N</Eq>
+                    <p>
+                      <strong>Step 3 — link friction force to the normal force.</strong>
+                      Kinetic friction follows the standard rule f_k = μ_k · N. We're told the
+                      axe presses with normal force N = 20 N. Solve for μ_k:
+                    </p>
+                    <Eq>μ_k = f / N = 2.444 / 20 ≈ 0.122</Eq>
+                    <p>
+                      A coefficient of ~0.12 is plausible for steel against a sharpening
+                      stone. If we'd gotten μ_k &gt; 1, that would be a red flag and we should
+                      recheck arithmetic.
+                    </p>
                   </div>
                 ),
                 answer: { value: "μ_k ≈ 0.122" },

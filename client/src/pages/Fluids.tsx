@@ -4,7 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
-import { WorkedExample } from "@/components/midterm/WorkedExample";
+import { WorkedExample, Eq, Why } from "@/components/midterm/WorkedExample";
 import { PracticeProblem } from "@/components/midterm/PracticeProblem";
 import { FormulaBlock } from "@/components/midterm/FormulaBlock";
 
@@ -306,51 +306,152 @@ export default function Fluids() {
                 </div>
               }
               variables={[
-                { symbol: "ρ", meaning: "fluid density (water = 1000)", units: "kg/m³" },
-                { symbol: "h", meaning: "depth below the reference surface", units: "m" },
-                { symbol: "P_atm", meaning: "atmospheric pressure ≈ 101,325 Pa (often round to 100,000)" },
+                {
+                  symbol: "ρ",
+                  meaning:
+                    "how heavy the fluid is per cubic meter (water = 1000, mercury = 13,600)",
+                  units: "kg/m³",
+                },
+                {
+                  symbol: "h",
+                  meaning:
+                    "depth below the reference surface where you're computing pressure",
+                  units: "m",
+                },
+                {
+                  symbol: "P₀",
+                  meaning:
+                    "pressure at the reference surface — usually atmospheric pressure if open to air",
+                  units: "Pa",
+                },
+                {
+                  symbol: "P_atm",
+                  meaning: "atmospheric pressure ≈ 101,325 Pa (often round to 100,000 Pa)",
+                  units: "Pa",
+                },
               ]}
-              whenToUse="Pressure at depth in a static fluid. Always check whether the problem gives gauge or absolute pressure."
+              whenToUse="Every meter of depth in water adds about 10,000 Pa (≈ 0.1 atm) of pressure on top of whatever was at the surface — that's why your ears pop in 10 m of water (one extra atm) but not in a swimming pool. Watch the gauge-vs-absolute distinction: gauge pressure is what tire gauges and most lab equipment read (relative to atmosphere); absolute is what physics formulas (especially Bernoulli) want."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Archimedes' buoyancy"
               formula={<div>F_buoy = ρ_fluid · V_displaced · g</div>}
               variables={[
-                { symbol: "V_displaced", meaning: "volume of fluid pushed out of the way by the object", units: "m³" },
+                {
+                  symbol: "ρ_fluid",
+                  meaning: "density of the FLUID the object sits in, not the object's own density",
+                  units: "kg/m³",
+                },
+                {
+                  symbol: "V_displaced",
+                  meaning:
+                    "volume of fluid pushed out of the way by the object — equals the object's submerged volume",
+                  units: "m³",
+                },
               ]}
-              whenToUse="Floating boats, submerged objects, hot-air balloons. Equilibrium: F_buoy = m·g."
+              whenToUse="Buoyant force is the weight of the fluid the object displaces. The intuition: the fluid 'wants' to occupy that volume; pushing it out of the way costs energy, which becomes a lifting force on the object. For floating: F_buoy = mg → only enough of the object submerges to displace its full weight in fluid. For sinking: full volume is displaced; net downward force is (ρ_obj − ρ_fluid)·V·g."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Continuity (incompressible)"
-              formula={<div>A₁ v₁ = A₂ v₂ = Q</div>}
+              formula={
+                <div className="space-y-1 text-base">
+                  <div>Q = A · v</div>
+                  <div>A₁ v₁ = A₂ v₂ = Q</div>
+                </div>
+              }
               variables={[
-                { symbol: "A", meaning: "cross-sectional area", units: "m²" },
-                { symbol: "v", meaning: "fluid speed at that section", units: "m/s" },
-                { symbol: "Q", meaning: "volume flow rate", units: "m³/s" },
+                {
+                  symbol: "A",
+                  meaning: "cross-sectional area of the pipe at that section",
+                  units: "m²",
+                },
+                {
+                  symbol: "v",
+                  meaning: "speed of the fluid through that cross-section",
+                  units: "m/s",
+                },
+                {
+                  symbol: "Q",
+                  meaning:
+                    "volume flow rate — how many cubic meters of fluid pass per second. Constant along the pipe",
+                  units: "m³/s",
+                },
               ]}
-              whenToUse="Same fluid in a pipe of varying cross-section: where it narrows, it speeds up."
+              whenToUse="Conservation of mass for incompressible fluids: whatever volume enters per second must leave per second. So when the pipe narrows, the fluid has to speed up to push the same volume through. Same physics as a thumb on a garden hose: smaller area, faster jet. The product A·v is constant; halving A doubles v."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Bernoulli's equation"
               formula={<div>P + ½ρv² + ρgh = constant (along a streamline)</div>}
               variables={[
-                { symbol: "P", meaning: "absolute pressure at that point", units: "Pa" },
-                { symbol: "½ρv²", meaning: "kinetic energy per unit volume", units: "Pa" },
-                { symbol: "ρgh", meaning: "gravitational PE per unit volume", units: "Pa" },
+                {
+                  symbol: "P",
+                  meaning:
+                    "absolute static pressure at this point along the streamline",
+                  units: "Pa",
+                },
+                {
+                  symbol: "½ρv²",
+                  meaning:
+                    "the 'dynamic pressure' — kinetic energy per unit volume of the moving fluid",
+                  units: "Pa",
+                },
+                {
+                  symbol: "ρgh",
+                  meaning:
+                    "gravitational PE per unit volume; h is height above some reference",
+                  units: "Pa",
+                },
               ]}
-              whenToUse="Steady, incompressible, inviscid flow. Connect any two points along a streamline."
+              whenToUse="Energy conservation per unit volume of fluid. Where the fluid speeds up (½ρv² grows), pressure must drop to compensate — that's why airplane wings lift (faster air over the top → lower P → net upward push) and why a curveball curves. Connect any two points along the same streamline (like inlet and outlet of a pipe). Requires steady, incompressible, frictionless flow."
             />
             <FormulaBlock
               accentColor={ACCENT}
               name="Torricelli's theorem"
               formula={<div>v_exit = √(2gh)</div>}
               variables={[
-                { symbol: "h", meaning: "depth of the hole below the surface", units: "m" },
+                {
+                  symbol: "h",
+                  meaning: "depth of the small hole below the open top of the tank",
+                  units: "m",
+                },
               ]}
-              whenToUse="Open tank (atm pressure on top), small hole, large reservoir (so v_top ≈ 0). Same as a free-falling object."
+              whenToUse="Bernoulli applied to an open tank with a small hole: the surface and the hole both have atmospheric pressure (so P cancels), the surface is essentially still (so v_top ≈ 0), and the only thing connecting them is gravity. Result: the water emerges at exactly the speed an object would have after free-falling from height h. Notable: this doesn't depend on fluid density — water and mercury exit at the same speed from the same depth."
+            />
+            <FormulaBlock
+              accentColor={ACCENT}
+              name="Free-fall time (horizontal launch)"
+              formula={
+                <div className="space-y-1 text-base">
+                  <div>H = ½ · g · t²</div>
+                  <div>t = √(2H / g)</div>
+                  <div>d = v · t</div>
+                </div>
+              }
+              variables={[
+                {
+                  symbol: "H",
+                  meaning: "height the stream is launched from above the landing surface",
+                  units: "m",
+                },
+                {
+                  symbol: "t",
+                  meaning: "time of flight — how long the droplets stay in the air before hitting ground",
+                  units: "s",
+                },
+                {
+                  symbol: "v",
+                  meaning: "horizontal exit speed (from Bernoulli or Torricelli) — stays constant in the air",
+                  units: "m/s",
+                },
+                {
+                  symbol: "d",
+                  meaning: "horizontal range — how far downstream the water lands",
+                  units: "m",
+                },
+              ]}
+              whenToUse="Once the fluid leaves the nozzle horizontally, it's no longer a fluid problem — every droplet is in free fall. The vertical and horizontal motions are independent: gravity handles the fall (giving you t), and the exit speed handles the horizontal travel (giving you d = v·t). Use this whenever a fluid problem ends with 'where does the water land?' — solve Bernoulli for v_exit first, then drop into projectile motion."
             />
           </div>
         </section>
@@ -371,38 +472,96 @@ export default function Fluids() {
             }
             steps={[
               {
-                heading: "Set up Bernoulli from inside (top, v≈0) to exit (atm)",
+                heading: "Pick the two Bernoulli reference points and write the equation",
                 body: (
-                  <p>
-                    P_top + ½ρv_top² + ρgh_top = P_exit + ½ρv_exit² + ρgh_exit. With v_top ≈ 0,
-                    take h_exit = 0:
-                  </p>
+                  <>
+                    <Why>
+                      Bernoulli's equation says the quantity P + ½ρv² + ρgh is constant
+                      along a streamline (for ideal, incompressible, non-viscous flow). To
+                      use it, we pick two points along the same flow path and equate their
+                      Bernoulli quantities.
+                    </Why>
+                    <Why>
+                      <strong>Point 1 — inside the reservoir, at the top:</strong> the
+                      water there is essentially still because the tank's cross-section
+                      is much larger than the hole, so v₁ ≈ 0. Pressure P₁ = 8 atm
+                      absolute = 800,000 Pa. Take this point's height as h₁ = 0.08 m
+                      above the exit.
+                    </Why>
+                    <Why>
+                      <strong>Point 2 — at the exit hole:</strong> water is now moving at
+                      v₂ = v_exit (what we want). The hole opens to atmosphere, so P₂ =
+                      P_atm = 100,000 Pa. Set h₂ = 0 (our reference level).
+                    </Why>
+                    <Eq>P₁ + ½ρ·v₁² + ρ·g·h₁ = P₂ + ½ρ·v₂² + ρ·g·h₂</Eq>
+                    <Eq>800,000 + 0 + 1000·9.8·0.08 = 100,000 + ½·1000·v² + 0</Eq>
+                  </>
                 ),
               },
               {
                 heading: "Solve for v_exit",
                 body: (
-                  <div className="space-y-1">
-                    <p>v² = 2·(P_top − P_atm)/ρ + 2gh</p>
-                    <p>= 2·(800,000 − 100,000)/1000 + 2·9.8·0.08</p>
-                    <p>= 1400 + 1.57 = 1401.57</p>
-                  </div>
+                  <>
+                    <Why>
+                      Rearrange: move the unknown ½ρv² term to one side and combine the
+                      pressure and gravity terms on the other:
+                    </Why>
+                    <Eq>v² = 2·(P₁ − P₂)/ρ + 2·g·(h₁ − h₂)</Eq>
+                    <Eq>v² = 2·(800,000 − 100,000)/1000 + 2·9.8·0.08</Eq>
+                    <Eq>v² = 1400 + 1.57 ≈ 1401.57</Eq>
+                    <Eq>v_exit ≈ √1401.57 ≈ 37.4 m/s</Eq>
+                    <Why>
+                      <strong>Notice:</strong> the pressure term (1400) absolutely
+                      dominates the gravity term (1.57). For a pressurized tank, we could
+                      drop the ρgh term and still get the right answer to 0.06%. Use this
+                      as a sanity check, not as a license to skip terms.
+                    </Why>
+                  </>
                 ),
                 result: { label: "(a) v_exit", value: "≈ 37.4 m/s", color: "cyan" },
               },
               {
-                heading: "(b) Volume flow rate Q = πr²·v",
-                body: <p>= π·(0.001)²·37.4 = 1.18×10⁻⁴</p>,
+                heading: "(b) Volume flow rate from the exit area and exit velocity",
+                body: (
+                  <>
+                    <Why>
+                      Volume flow rate Q (m³/s) is just the cross-sectional area of the
+                      exit times the exit speed. The hole is circular with radius r = 1 mm
+                      = 0.001 m, so its area is π·r²:
+                    </Why>
+                    <Eq>Q = A · v = π · r² · v_exit</Eq>
+                    <Eq>Q = π · (0.001)² · 37.4 = π · 10⁻⁶ · 37.4 ≈ 1.18 × 10⁻⁴ m³/s</Eq>
+                    <Why>
+                      Convert: 1.18 × 10⁻⁴ m³/s = 0.118 L/s ≈ 7 L/min. That's the rate at
+                      which water leaves the gun.
+                    </Why>
+                  </>
+                ),
                 result: { label: "Q", value: "≈ 1.18×10⁻⁴ m³/s ≈ 0.118 L/s", color: "cyan" },
               },
               {
-                heading: "(c) Range — projectile motion from 1.2 m height",
+                heading: "(c) Range — once it leaves the gun, it's just projectile motion",
                 body: (
-                  <div className="space-y-1">
-                    <p>Time to fall: t = √(2H/g) = √(2·1.2/9.8) = √0.2449</p>
-                    <p>t ≈ 0.495 s</p>
-                    <p>Horizontal range: d = v·t = 37.4·0.495</p>
-                  </div>
+                  <>
+                    <Why>
+                      Bernoulli got us the exit speed, but in the air the water is just a
+                      stream of droplets in free fall. We're holding the gun horizontally
+                      at H = 1.2 m above ground.
+                    </Why>
+                    <Why>
+                      <strong>Vertical motion:</strong> initial vertical velocity is zero
+                      (gun held flat), constant downward acceleration g. Time to fall
+                      from height H:
+                    </Why>
+                    <Eq>H = ½ · g · t²   →   t = √(2 H / g)</Eq>
+                    <Eq>t = √(2 · 1.2 / 9.8) = √0.2449 ≈ 0.495 s</Eq>
+                    <Why>
+                      <strong>Horizontal motion:</strong> water leaves the muzzle at v =
+                      37.4 m/s and continues at that speed (no air drag in the model).
+                      Range = horizontal speed × time of flight:
+                    </Why>
+                    <Eq>d = v · t = 37.4 · 0.495 ≈ 18.5 m</Eq>
+                  </>
                 ),
                 result: { label: "Range", value: "≈ 18.5 m", color: "cyan" },
               },
@@ -440,10 +599,34 @@ export default function Fluids() {
                   label: "(a)",
                   question: "Velocity of juice as it leaves the straw",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Bernoulli from juice surface (1) to straw exit (2):</p>
-                      <p>120,000 + 0 + 0 = 100,000 + ½·1000·v² + 1000·9.8·0.08</p>
-                      <p>20,000 − 784 = 500·v² → v² = 38.43</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Choose the two Bernoulli points.</strong> Point 1 = juice
+                        surface (top of liquid), where v₁ ≈ 0 because the box is wide
+                        compared to the straw. Pressure there is the air pressure inside
+                        the box, P₁ = 120,000 Pa. Take this as our reference height,
+                        h₁ = 0.
+                      </p>
+                      <p>
+                        Point 2 = top of the straw where juice exits. Pressure there is
+                        atmospheric, P₂ = 100,000 Pa. Speed v₂ = v (unknown). Height
+                        h₂ = 0.08 m above the surface (the juice has to rise up the straw
+                        before exiting).
+                      </p>
+                      <p>
+                        <strong>Apply Bernoulli</strong> P + ½ρv² + ρgh = const between
+                        the two points:
+                      </p>
+                      <Eq>P₁ + 0 + 0 = P₂ + ½·ρ·v² + ρ·g·h₂</Eq>
+                      <Eq>120,000 = 100,000 + ½·1000·v² + 1000·9.8·0.08</Eq>
+                      <Eq>120,000 = 100,000 + 500·v² + 784</Eq>
+                      <Eq>500·v² = 120,000 − 100,784 = 19,216   →   v² = 38.43</Eq>
+                      <Eq>v ≈ 6.20 m/s</Eq>
+                      <p>
+                        Note the gravity term ρgh = 784 Pa is small compared to the
+                        20,000 Pa pressure difference but not negligible here (≈ 4% of
+                        the budget). Don't drop it.
+                      </p>
                     </div>
                   ),
                   answer: { value: "v ≈ 6.20", unit: "m/s" },
@@ -451,19 +634,44 @@ export default function Fluids() {
                 {
                   label: "(b)",
                   question: "Volume flow rate",
-                  solutionSteps: <p>Q = πr²·v = π·(0.001)²·6.20 = π·10⁻⁶·6.20</p>,
+                  solutionSteps: (
+                    <div className="space-y-2">
+                      <p>
+                        Cross-sectional area of the straw × the juice's exit speed:
+                      </p>
+                      <Eq>Q = A · v = π · r² · v = π · (0.001)² · 6.20 ≈ 1.95 × 10⁻⁵ m³/s</Eq>
+                      <p>
+                        That's about 0.020 L/s — a slow trickle, consistent with a kid
+                        squeezing a juice box.
+                      </p>
+                    </div>
+                  ),
                   answer: { value: "Q ≈ 1.95×10⁻⁵", unit: "m³/s" },
                 },
                 {
                   label: "(c)",
                   question: "Why does it stop squirting before all the juice is gone?",
                   solutionSteps: (
-                    <p>
-                      As juice exits, the gas above it expands (PV = const), so the air pressure
-                      inside drops. Eventually P_inside − P_atm − ρg·h_rise reaches zero, and the
-                      net pressure pushing juice up the straw is gone. At that point flow stops
-                      even though juice remains in the box.
-                    </p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>The trapped air does the pushing.</strong> When the kid
+                        pressurizes the box, they trap a fixed amount of gas at 120,000
+                        Pa above the juice. As juice exits, the air volume above
+                        increases. By PV = nRT (isothermal expansion), the trapped air's
+                        pressure must <em>drop</em> as it expands.
+                      </p>
+                      <p>
+                        Squirting stops when the inside pressure can no longer push juice
+                        up the straw against atmospheric pressure plus the residual fluid
+                        head:
+                      </p>
+                      <Eq>P_inside ≤ P_atm + ρ·g·h_rise   →   no more flow</Eq>
+                      <p>
+                        At that moment juice still remains, but the system has reached
+                        mechanical equilibrium. To resume squirting, the kid must
+                        re-blow into the box.
+                      </p>
+                    </div>
                   ),
                   answer: { value: "Air expansion drops pressure → equilibrium reached" },
                 },
@@ -486,11 +694,37 @@ export default function Fluids() {
                   label: "(a)",
                   question: "Initial speed of water at the faucet exit",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>P_top_abs = 200,000 + 100,000 = 300,000 Pa.</p>
-                      <p>Water column above faucet: 1.5 − 0.1 = 1.4 m.</p>
-                      <p>Bernoulli: 300,000 + 0 + 1000·9.8·1.4 = 100,000 + ½·1000·v²</p>
-                      <p>313,720 − 100,000 = 500·v² → v² = 427.4</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Convert gauge to absolute pressure first.</strong>{" "}
+                        Gauge pressure is the excess <em>above</em> atmospheric. Bernoulli
+                        works with absolute pressures throughout. So:
+                      </p>
+                      <Eq>P_top,abs = P_gauge + P_atm = 200,000 + 100,000 = 300,000 Pa</Eq>
+                      <p>
+                        <strong>Pick the two points.</strong> Point 1 = water surface
+                        (top of water, just below the trapped air). v₁ ≈ 0 (large area).
+                        P₁ = 300,000 Pa absolute. Height: water depth is 1.5 m and the
+                        faucet hole is 0.1 m above the base, so the surface is 1.4 m
+                        above the faucet. Take h₁ = 1.4 m, h₂ = 0.
+                      </p>
+                      <p>
+                        Point 2 = at the faucet exit, where v₂ = v (unknown) and P₂ =
+                        P_atm = 100,000 Pa.
+                      </p>
+                      <p>
+                        <strong>Apply Bernoulli:</strong>
+                      </p>
+                      <Eq>P₁ + 0 + ρ·g·h₁ = P₂ + ½·ρ·v² + 0</Eq>
+                      <Eq>300,000 + 1000·9.8·1.4 = 100,000 + ½·1000·v²</Eq>
+                      <Eq>300,000 + 13,720 = 100,000 + 500·v²</Eq>
+                      <Eq>500·v² = 213,720   →   v² = 427.4   →   v ≈ 20.7 m/s</Eq>
+                      <p>
+                        About 75 km/h — fast for a household faucet because the trapped
+                        air's pressure (200,000 Pa gauge) is doing most of the pushing.
+                        Without that pressurization, you'd only get v = √(2g·1.4) = 5.2
+                        m/s from the water head alone.
+                      </p>
                     </div>
                   ),
                   answer: { value: "v ≈ 20.7", unit: "m/s" },
@@ -499,12 +733,26 @@ export default function Fluids() {
                   label: "(b)",
                   question: "Speed of water at its highest point in the tank (the surface)",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Continuity: A_tank · v_top = A_hole · v_exit.</p>
+                    <div className="space-y-2">
                       <p>
-                        A_hole/A_tank ≈ (0.005/R_tank)². For R_tank ≈ 0.5 m, ratio ≈ 10⁻⁴.
+                        <strong>Use continuity (mass conservation).</strong> An
+                        incompressible fluid that enters one cross-section must leave
+                        another at a rate that conserves volume:
                       </p>
-                      <p>v_top ≈ 10⁻⁴·20.7</p>
+                      <Eq>A_tank · v_top = A_hole · v_exit</Eq>
+                      <p>
+                        Hole radius is 0.005 m (1 cm diameter), so A_hole = π·(0.005)² ≈
+                        7.85×10⁻⁵ m². Tank radius is roughly 0.5 m (typical), so A_tank ≈
+                        π·(0.5)² ≈ 0.785 m². The ratio:
+                      </p>
+                      <Eq>A_hole / A_tank ≈ 7.85×10⁻⁵ / 0.785 ≈ 10⁻⁴</Eq>
+                      <Eq>v_top ≈ (A_hole/A_tank) · v_exit ≈ 10⁻⁴ · 20.7 ≈ 2×10⁻³ m/s</Eq>
+                      <p>
+                        About 2 mm/s — vanishingly slow. This is exactly why we use
+                        v_top ≈ 0 in Bernoulli for "large reservoir" problems. The
+                        approximation is valid as long as the hole is much smaller than
+                        the tank cross-section.
+                      </p>
                     </div>
                   ),
                   answer: { value: "v_top ≈ 2×10⁻³", unit: "m/s (essentially zero — justifies the v_top ≈ 0 assumption)" },
@@ -513,11 +761,29 @@ export default function Fluids() {
                   label: "(c)",
                   question: "Air pressure when water level drops to 0.91 m, and why flow stops",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Air-volume expansion (assume isothermal, PV=const):</p>
-                      <p>V_air_initial: 0.5 m of column. V_air_final: 2 − 0.91 = 1.09 m.</p>
-                      <p>P_final · V_final = P_initial · V_initial</p>
-                      <p>P_final = 300,000 · 0.5/1.09</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>The trapped air expands as water leaves.</strong> Initially
+                        the tank had 1.5 m of water and 0.5 m of air column above
+                        (2.0 m total height). After the water drops to 0.91 m, the air
+                        column has expanded to 2 − 0.91 = 1.09 m. Assuming the air stays
+                        at the same temperature, PV = constant (isothermal compression):
+                      </p>
+                      <Eq>P_initial · V_initial = P_final · V_final</Eq>
+                      <p>
+                        Volumes are proportional to column heights (tank cross-section
+                        cancels):
+                      </p>
+                      <Eq>P_final = P_initial · (V_init / V_final) = 300,000 · (0.5 / 1.09) ≈ 137,600 Pa abs</Eq>
+                      <Eq>P_final,gauge = 137,600 − 100,000 = 37,600 Pa gauge</Eq>
+                      <p>
+                        <strong>Why flow stops.</strong> Bernoulli at this point gives
+                        v² ∝ (P_inside + ρ·g·h_water − P_atm). As water leaves, two
+                        things happen at once: the air pressure P_inside drops (just
+                        computed), and the water head h_water also drops. Eventually the
+                        sum reaches P_atm and flow stops. The tank can't fully drain
+                        unless atmosphere is admitted.
+                      </p>
                     </div>
                   ),
                   answer: {
@@ -542,9 +808,25 @@ export default function Fluids() {
                   label: "(a)",
                   question: "Velocity of water leaving the faucet",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Both surfaces are at atm — pressures cancel. Effective Δh = 10 − 1.5 = 8.5 m.</p>
-                      <p>v = √(2g·Δh) = √(2·9.8·8.5) = √166.6</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>This is the classic Torricelli setup.</strong> Both the
+                        tower surface and the faucet exit are open to the atmosphere, so
+                        both pressures equal P_atm and the pressure terms in Bernoulli
+                        cancel out. The only thing driving flow is the gravitational
+                        head — the height difference between the surface and the faucet:
+                      </p>
+                      <Eq>Δh = h_surface − h_faucet = 10 − 1.5 = 8.5 m</Eq>
+                      <p>
+                        With v_top ≈ 0 (huge tower) and the pressure terms gone,
+                        Bernoulli reduces to ½ρv² = ρ·g·Δh, so:
+                      </p>
+                      <Eq>v = √(2 g · Δh) = √(2 · 9.8 · 8.5) = √166.6 ≈ 12.91 m/s</Eq>
+                      <p>
+                        Roughly 46 km/h — that's why old gravity-fed water systems can
+                        produce respectable pressure without a pump, just by elevating
+                        the storage tank.
+                      </p>
                     </div>
                   ),
                   answer: { value: "v ≈ 12.91", unit: "m/s" },
@@ -552,13 +834,35 @@ export default function Fluids() {
                 {
                   label: "(b)",
                   question: "Volume flow rate",
-                  solutionSteps: <p>Q = πr²·v = π·(0.005)²·12.91 = π·2.5×10⁻⁵·12.91</p>,
+                  solutionSteps: (
+                    <div className="space-y-2">
+                      <p>
+                        Cross-sectional area of the faucet × the exit speed:
+                      </p>
+                      <Eq>Q = π · r² · v = π · (0.005)² · 12.91 = π · 2.5×10⁻⁵ · 12.91</Eq>
+                      <Eq>Q ≈ 1.01 × 10⁻³ m³/s ≈ 1 L/s</Eq>
+                      <p>
+                        About a liter per second — typical for a normal kitchen faucet.
+                      </p>
+                    </div>
+                  ),
                   answer: { value: "Q ≈ 1.01×10⁻³", unit: "m³/s" },
                 },
                 {
                   label: "(c)",
                   question: "Time to fill a 1 L (10⁻³ m³) bottle",
-                  solutionSteps: <p>t = V/Q = 10⁻³ / 1.01×10⁻³</p>,
+                  solutionSteps: (
+                    <div className="space-y-2">
+                      <p>
+                        Time = volume to fill / volumetric flow rate:
+                      </p>
+                      <Eq>t = V / Q = 10⁻³ m³ / 1.01×10⁻³ m³/s ≈ 0.99 s</Eq>
+                      <p>
+                        Almost exactly one second. (1 L per second is a useful mental
+                        anchor for residential plumbing flow rates.)
+                      </p>
+                    </div>
+                  ),
                   answer: { value: "t ≈ 0.99", unit: "s (~ 1 second)" },
                 },
               ]}
@@ -578,9 +882,25 @@ export default function Fluids() {
                   label: "(a)",
                   question: "Equilibrium depth y of the boat's bottom",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Buoyancy = weight: ρ_water·(L·w·y)·g = m·g</p>
-                      <p>y = m/(ρ·L·w) = 3000/(1000·6)</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>Archimedes' principle:</strong> a floating boat displaces
+                        a volume of water whose weight equals the boat's own weight.
+                        Since the boat is rectangular with footprint L × w, if it sits
+                        with depth y submerged, it displaces a volume V_disp = L · w · y.
+                        The weight of that displaced water is ρ_water · V_disp · g.
+                      </p>
+                      <p>
+                        Setting buoyancy = boat's weight:
+                      </p>
+                      <Eq>ρ_water · (L · w · y) · g = m · g</Eq>
+                      <p>
+                        g cancels (gravity affects both sides equally), and we solve for y:
+                      </p>
+                      <Eq>y = m / (ρ_water · L · w) = 3000 / (1000 · 3 · 2) = 3000 / 6000 = 0.5 m</Eq>
+                      <p>
+                        So the boat sinks 50 cm into the water at rest.
+                      </p>
                     </div>
                   ),
                   answer: { value: "y = 0.5", unit: "m" },
@@ -589,9 +909,31 @@ export default function Fluids() {
                   label: "(b)",
                   question: "Velocity of water through a hole in the bottom",
                   solutionSteps: (
-                    <div className="space-y-1">
-                      <p>Hole is at the boat's bottom, depth 0.5 m below water surface.</p>
-                      <p>Torricelli (atm on both sides): v = √(2g·0.5) = √9.8</p>
+                    <div className="space-y-2">
+                      <p>
+                        <strong>The hole is in the boat's bottom at depth y = 0.5 m</strong>
+                        below the lake surface. Inside the boat is air (above the leak,
+                        until water rises). Outside the hole is water at lake-bottom
+                        level — pressurized by the column of water above it.
+                      </p>
+                      <p>
+                        At the hole, the lake-side pressure is P_atm + ρgh (atmospheric
+                        plus the head from 0.5 m of water above). Inside the boat just
+                        above the hole, the pressure is just P_atm. The pressure
+                        difference drives water up through the hole.
+                      </p>
+                      <p>
+                        Apply Bernoulli from the lake surface (point 1, far from hole) to
+                        the hole opening on the inside (point 2). Both ends face air at
+                        P_atm, so pressures cancel; height difference is y; v_lake_top ≈
+                        0 (lake is huge):
+                      </p>
+                      <Eq>v = √(2 g · y) = √(2 · 9.8 · 0.5) = √9.8 ≈ 3.13 m/s</Eq>
+                      <p>
+                        This is just Torricelli's law in reverse — water enters the boat
+                        with the same speed it would exit a tank with surface 0.5 m
+                        above the hole.
+                      </p>
                     </div>
                   ),
                   answer: { value: "v ≈ 3.13", unit: "m/s" },
@@ -599,7 +941,20 @@ export default function Fluids() {
                 {
                   label: "(c)",
                   question: "Volume rate entering the boat (hole radius 0.005 m)",
-                  solutionSteps: <p>Q = πr²·v = π·(0.005)²·3.13</p>,
+                  solutionSteps: (
+                    <div className="space-y-2">
+                      <p>
+                        Cross-sectional area of the hole × the inflow speed:
+                      </p>
+                      <Eq>Q = π · r² · v = π · (0.005)² · 3.13 ≈ 2.46 × 10⁻⁴ m³/s</Eq>
+                      <p>
+                        Convert: 2.46 × 10⁻⁴ m³/s = 0.246 L/s ≈ 14.8 L/min. A 5-mm hole
+                        adds water to the boat at a worrying rate. (As water accumulates
+                        inside, the boat sits lower, increasing y and thus the inflow
+                        speed — the leak accelerates over time.)
+                      </p>
+                    </div>
+                  ),
                   answer: { value: "Q ≈ 2.46×10⁻⁴", unit: "m³/s (≈ 0.246 L/s)" },
                 },
               ]}

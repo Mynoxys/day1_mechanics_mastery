@@ -58,7 +58,17 @@
   --color-shm: #f59e0b;
   --color-wave: #10b981;
   --color-fluid: #0ea5e9;
-  
+
+  /* EE / ESE 123 Module Colors - electrical quantities */
+  --color-voltage: #f59e0b;
+  --color-current: #ef4444;
+  --color-resistance: #10b981;
+  --color-ground: #475569;
+  --color-signal: #06b6d4;
+  --color-power: #c026d3;
+  --color-digital-1: #2563eb;
+  --color-digital-0: #94a3b8;
+
   /* Primary Colors */
   --primary: #1e40af;
   --primary-foreground: #f0f9ff;
@@ -240,6 +250,16 @@
   .vec-shm        { @apply stroke-[#f59e0b] fill-[#f59e0b]; }
   .vec-wave       { @apply stroke-[#10b981] fill-[#10b981]; }
   .vec-fluid      { @apply stroke-[#0ea5e9] fill-[#0ea5e9]; }
+
+  /* EE Topic Visualization Utilities */
+  .ee-voltage     { @apply stroke-[#f59e0b] fill-[#f59e0b]; }
+  .ee-current     { @apply stroke-[#ef4444] fill-[#ef4444]; }
+  .ee-resistance  { @apply stroke-[#10b981] fill-[#10b981]; }
+  .ee-ground      { @apply stroke-[#475569] fill-[#475569]; }
+  .ee-signal      { @apply stroke-[#06b6d4] fill-[#06b6d4]; }
+  .ee-power       { @apply stroke-[#c026d3] fill-[#c026d3]; }
+  .ee-digital-1   { @apply stroke-[#2563eb] fill-[#2563eb]; }
+  .ee-digital-0   { @apply stroke-[#94a3b8] fill-[#94a3b8]; }
   
   /* Section Styling */
   .section-header {

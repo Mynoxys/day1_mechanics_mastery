@@ -5,6 +5,9 @@ import type { ExamSet, Question } from "../types";
 import { midtermPractice1 } from "./midtermPractice1";
 import { midtermPractice2 } from "./midtermPractice2";
 import { midtermPractice3 } from "./midtermPractice3";
+import { midtermHard1 } from "./midtermHard1";
+import { midtermHard2 } from "./midtermHard2";
+import { midtermHard3 } from "./midtermHard3";
 import { finalPractice1 } from "./finalPractice1";
 import { finalPractice2 } from "./finalPractice2";
 import { gotchaBank } from "./gotchaBank";
@@ -13,6 +16,9 @@ export const EXAM_REGISTRY: ExamSet[] = [
   midtermPractice1,
   midtermPractice2,
   midtermPractice3,
+  midtermHard1,
+  midtermHard2,
+  midtermHard3,
   finalPractice1,
   finalPractice2,
 ];

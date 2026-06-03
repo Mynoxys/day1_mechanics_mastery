@@ -37,6 +37,23 @@ export const midtermLectures: Lecture[] = [
         trap:
           "`System.out.println` must be spelled and capitalized exactly. A capitalization slip is the #1 cause of a 'cannot find symbol' compile error.",
       },
+      {
+        heading: "Number systems: binary, hex, and octal",
+        idea: "A computer stores everything as bits — 0s and 1s — because a wire is either off or on. A number system's BASE says how many digit-symbols it uses and what each column is worth: decimal is base 10 (columns worth 1, 10, 100…), binary is base 2 (1, 2, 4, 8, 16…), hexadecimal is base 16, octal is base 8.",
+        detail:
+          "Reading binary → decimal is just adding the column values where a 1 sits. Going decimal → binary, keep dividing by 2 and read the remainders bottom-to-top. Hex is really shorthand for binary: every hex digit maps to exactly 4 bits, which is why programmers write bytes in hex.",
+        code: "binary 1010 = 8 + 0 + 2 + 0 = 10\nhex F       = 15            // A=10, B=11, ..., F=15\nhex 2A      = 0010 1010     // each hex digit = exactly 4 bits\noctal 17    = 1*8 + 7       = 15",
+        codeCaption: "Each column is the base raised to its position: binary 1010 = 1·8 + 0·4 + 1·2 + 0·1.",
+        trap: "Hex digits run 0–9 then A–F, where A=10 … F=15 — they're digits, not letters. And one hex digit is exactly four binary digits; forget that and every conversion breaks.",
+      },
+      {
+        heading: "Reserved words, identifiers, and blocks",
+        idea: "Keywords (reserved words) like `class`, `public`, `int`, `if`, `while` are spoken for by Java — you can't reuse them as names. An identifier is any name YOU make up for a class, variable, or method. A block is a chunk of code wrapped in `{ }`.",
+        detail:
+          "Identifier rules: start with a letter, `_`, or `$` (never a digit), then any mix of letters/digits/`_`/`$`, and it must not be a keyword. Conventions (expected, not enforced): classes `UpperCamelCase`, variables/methods `lowerCamelCase`, constants `ALL_CAPS`.",
+        code: "int 2cool = 5;   // ERROR: can't start with a digit\nint class = 5;   // ERROR: 'class' is a reserved word\nint score2 = 5;  // OK",
+        trap: "A name that starts with a digit, contains a hyphen, or collides with a keyword is a compile error. `myClass` is fine; `class` is not.",
+      },
     ],
     drills: [
       { id: "l01-d1", type: "mc", topic: "types-operators", difficulty: 1, points: 1, source: "Learn L01",
@@ -48,6 +65,15 @@ export const midtermLectures: Lecture[] = [
       { id: "l01-d3", type: "short", topic: "types-operators", difficulty: 1, points: 1, source: "Learn L01",
         prompt: "What command turns Hello.java into bytecode? (one word)", answer: "javac", acceptable: ["javac hello.java"],
         explanation: "javac is the compiler; `java` then runs the resulting bytecode." },
+      { id: "l01-d4", type: "short", topic: "types-operators", difficulty: 2, points: 1, source: "Learn L01",
+        prompt: "Convert the binary number 1010 to decimal.", answer: "10",
+        explanation: "Add the column values where a 1 sits: 8 + 0 + 2 + 0 = 10." },
+      { id: "l01-d5", type: "short", topic: "types-operators", difficulty: 1, points: 1, source: "Learn L01",
+        prompt: "How many bits does one hexadecimal digit represent?", answer: "4",
+        explanation: "Hex is base 16 = 2^4, so each hex digit maps to exactly 4 bits. That's why 0x2A = 0010 1010." },
+      { id: "l01-d6", type: "mc", topic: "types-operators", difficulty: 1, points: 1, source: "Learn L01",
+        prompt: "Which of these is a legal Java identifier?", choices: ["2cool", "my-var", "class", "score2"], correctIndex: 3,
+        explanation: "Identifiers can't start with a digit (2cool), can't contain '-' (my-var), and can't be a reserved word (class). score2 is fine." },
     ],
   },
 
@@ -95,6 +121,38 @@ export const midtermLectures: Lecture[] = [
         code: "int i = 5;\nint j = i++;   // j = 5, then i becomes 6\nint k = ++i;   // i becomes 7, k = 7\n// 2 + 3 * 4  →  14  (× before +)",
         trap: "Post vs pre matters only when you USE the value in the same expression. `i++` alone and `++i` alone both just add 1.",
       },
+      {
+        heading: "Constants with final",
+        idea: "A constant is a variable you promise never to change after it's set. Mark it `final`. By convention constants are NAMED_IN_CAPS so a reader instantly knows 'this never moves.'",
+        detail:
+          "You may assign a final exactly once — at the declaration or later — but a SECOND assignment is a compile error. A named constant (`final double PI = 3.14159;`) beats sprinkling the magic number 3.14159 through your code: one place to read it, one place to change it.",
+        code: "final double PI = 3.14159;\nfinal int SIZE;   // declare now\nSIZE = 3;         // assign once — OK\n// SIZE = 4;      // ERROR: cannot reassign a final",
+        trap: "`final` means assign-once, not assign-on-the-declaration-line. You can set it later, but the moment you assign it a second time it won't compile.",
+      },
+      {
+        heading: "char, Unicode, and escape sequences",
+        idea: "A `char` holds exactly one character in single quotes: `'A'`. Internally it IS a number — its Unicode (UTF-16) code — so a char and an int convert freely. Some characters can't be typed inside quotes (newline, tab, the quote itself), so you write them with a backslash escape.",
+        detail:
+          "`int i = 'A';` stores 65 with no cast (char widens to int); `char c = 65;` needs a cast back: `(char)65` is 'A'. You can also spell a char by its code: `'\\u0041'` is 'A'. Escapes: `\\n` newline, `\\t` tab, `\\\\` a literal backslash, `\\'` single quote, `\\\"` double quote.",
+        code: "char letter = 'A';\nchar uni = '\\u0041';         // Unicode code for 'A'\nint code = letter;            // 65  (char widens to int)\nchar next = (char)(code + 1); // 'B'\nSystem.out.print(\"a\\tb\\n\");    // a, tab, b, newline",
+        trap: "To put a double-quote INSIDE a string you must escape it (`\\\"`); a lone backslash is `\\\\` because a single `\\` starts an escape and eats the next character.",
+      },
+      {
+        heading: "Reading input with Scanner",
+        idea: "To read what the user types, build a `Scanner` wired to `System.in`, then ask it for the next value of the type you want.",
+        detail:
+          "`nextInt()` reads an int, `nextDouble()` a double, `next()` one whitespace-delimited word, `nextLine()` the rest of the current line. You must `import java.util.Scanner;` at the top of the file first.",
+        code: "import java.util.Scanner;\nScanner input = new Scanner(System.in);\nSystem.out.print(\"Age: \");\nint age = input.nextInt();\nString word = input.next();      // one token\nString line = input.nextLine();  // rest of the line",
+        trap: "Mixing `nextInt()`/`nextDouble()` with `nextLine()` bites everyone: the number read leaves the trailing newline in the buffer, so the very next `nextLine()` returns an empty string. Read past it (an extra `nextLine()`) or use `next()`.",
+      },
+      {
+        heading: "Doubles are approximate",
+        idea: "A `double` can't store most decimals exactly — it keeps the nearest binary fraction. So arithmetic on doubles carries a tiny rounding error you can sometimes see.",
+        detail:
+          "`1 - 0.1 - 0.1 - 0.1` does not print 0.7; it prints 0.7000000000000001. The value is always *close*, never exact. This is the reason you must never test doubles for exact equality — a loop like `while (x != 0)` on a shrinking double can run forever (see [[Loops]]).",
+        code: "System.out.println(1 - 0.1 - 0.1 - 0.1);\n// 0.7000000000000001   (NOT 0.7)",
+        trap: "Never compare doubles with == or != for exact equality. Test that they're within a small tolerance instead: `Math.abs(a - b) < 1e-9`.",
+      },
     ],
     drills: [
       { id: "l02-d1", type: "short", topic: "types-operators", gotchas: ["integer-division"], difficulty: 1, points: 1, source: "Learn L02",
@@ -115,6 +173,18 @@ export const midtermLectures: Lecture[] = [
         referenceSolution: "double avg = (double) sum / n;",
         rubric: ["Casts to double before dividing", "Not (double)(sum/n)"],
         explanation: "Cast one operand first so the division runs in floating point. (double)(sum/n) would integer-divide first, then widen — too late." },
+      { id: "l02-d7", type: "mc", topic: "types-operators", difficulty: 1, points: 1, source: "Learn L02",
+        prompt: "What happens with `final int X = 3; X = 4;`?", choices: ["X becomes 4", "Compile error", "Runtime error", "X stays 3 silently"], correctIndex: 1,
+        explanation: "final means assign-once. The second assignment X = 4 is rejected at compile time." },
+      { id: "l02-d8", type: "mc", topic: "char-strings", difficulty: 1, points: 1, source: "Learn L02",
+        prompt: "Which escape sequence produces a tab?", choices: ["\\n", "\\t", "\\\\", "\\\""], correctIndex: 1,
+        explanation: "\\t is tab; \\n is newline; \\\\ is a literal backslash; \\\" is a double quote." },
+      { id: "l02-d9", type: "short", topic: "types-operators", difficulty: 2, points: 1, source: "Learn L02",
+        prompt: "True or false: you can safely test two doubles for exact equality with ==.", answer: "false", acceptable: ["no", "f"],
+        explanation: "Doubles are approximate binary fractions, so == can be false even when the math 'should' match. Compare within a tolerance instead." },
+      { id: "l02-d10", type: "short", topic: "char-strings", gotchas: ["char-arithmetic"], difficulty: 2, points: 1, source: "Learn L02",
+        prompt: "What does `int i = 'A';` store in i? ('A' is 65)", answer: "65",
+        explanation: "A char widens to its Unicode code automatically — no cast needed — so i becomes 65." },
     ],
   },
 
@@ -155,6 +225,39 @@ export const midtermLectures: Lecture[] = [
         code: 'switch (n) {\n  case 1: System.out.print("one");\n  case 2: System.out.print("two"); break;\n  default: System.out.print("other");\n}\n// n == 1 prints "onetwo" (no break after case 1!)',
         trap: "Missing breaks cause fall-through. If a switch prints more than you expect, count the missing breaks.",
       },
+      {
+        heading: "Multiple-alternative if-else",
+        idea: "To choose one of several options, chain `else if`. Java tests each condition top to bottom and runs the FIRST that is true, then skips the rest. A final bare `else` is the catch-all.",
+        detail:
+          "Because it stops at the first true branch, ORDER matters: put the narrowest / most specific test first. Once a branch fires, none of the conditions below it are even checked.",
+        code: "if (score >= 90) grade = 'A';\nelse if (score >= 80) grade = 'B';\nelse if (score >= 70) grade = 'C';\nelse grade = 'F';",
+        trap: "Write the ranges high-to-low. If you test `score >= 70` before `score >= 90`, everyone above 70 gets a C and the `>= 90` branch is unreachable.",
+      },
+      {
+        heading: "& , | , ^ — the non-short-circuit booleans",
+        idea: "`&&` and `||` are the SHORT-CUT operators — they stop as soon as the answer is known. The single-character `&` and `|` are UNCONDITIONAL: they always evaluate BOTH sides. `^` is exclusive-or — true only when the two sides DIFFER.",
+        detail:
+          "With `&&`, a false left side skips the right. With `&`, the right runs no matter what. That gap is invisible until the right side has a side effect — an `x++`, a method call, a risky division.",
+        code: "int x = 1;\nboolean a = (x > 1) && (x++ < 10);  // right side SKIPPED → x stays 1\nint y = 1;\nboolean b = (y > 1) &  (y++ < 10);  // right side RUNS    → y becomes 2\nboolean diff = (true ^ false);       // true (they differ)",
+        codeCaption: "Both a and b are false, but `&` still ran y++. The operator you pick changes the side effects, not just the logic.",
+        trap: "`&`/`|` always evaluate both operands; `&&`/`||` may skip the second. When a trace question hides an `x++` or a method call on the right, the single-char operator changes the result.",
+      },
+      {
+        heading: "The conditional (ternary) operator",
+        idea: "The ternary `?:` is an if/else that is an EXPRESSION — it produces a value you can assign or print. Form: `condition ? valueIfTrue : valueIfFalse`.",
+        detail:
+          "`y = (x > 0) ? 1 : -1;` is exactly `if (x>0) y=1; else y=-1;`, but it fits on one line and yields a value. Perfect inside a println or assignment; just don't nest it three deep.",
+        code: "int y = (x > 0) ? 1 : -1;\nString parity = (num % 2 == 0) ? \"even\" : \"odd\";\nSystem.out.println(num + \" is \" + parity);",
+        trap: "The whole thing has a value (a plain `if` statement does not), and the result type is the common type of both branches — `cond ? 1 : 2.0` is a double, so it prints 1.0 not 1. See [[ternary-type]].",
+      },
+      {
+        heading: "Operator precedence and associativity",
+        idea: "When an expression mixes operators, precedence decides who binds first. Rough order: `()` → unary (`!`, unary `-`, casts, `++/--`) → `* / %` → `+ -` → comparisons `< <= > >=` → equality `== !=` → `^` → `&&` → `||` → assignment `= += …`.",
+        detail:
+          "Within one level, associativity breaks ties: nearly everything is left-to-right (`10 - 5 - 4` = `(10-5)-4` = 1), but assignment is right-to-left (`a = b = 5` sets b, then a). When unsure, add parentheses — they cost nothing and kill all ambiguity.",
+        code: "3 + 4 * 4 > 5 * (4 + 3) - 1\n// () : 4+3=7   → 3 + 4*4 > 5*7 - 1\n// *  : 3 + 16 > 35 - 1\n// +- : 19 > 34\n// >  : false",
+        trap: "`&&` binds tighter than `||`, and arithmetic binds tighter than comparison. So `a || b && c` means `a || (b && c)`, and `2 + 3 > 4` means `(2+3) > 4` — not `2 + (3>4)`.",
+      },
     ],
     drills: [
       { id: "l03-d1", type: "mc", topic: "control-flow", gotchas: ["operator-precedence"], difficulty: 2, points: 1, source: "Learn L03",
@@ -169,6 +272,18 @@ export const midtermLectures: Lecture[] = [
       { id: "l03-d4", type: "output", topic: "control-flow", difficulty: 2, points: 1, source: "Learn L03",
         prompt: "What prints?", code: 'int x = -3;\nif (x > 0)\n  System.out.print("P");\nSystem.out.print("Q");', answer: "Q",
         explanation: "x>0 is false so P is skipped, but the unbraced Q is not part of the if — it always prints. Output: Q." },
+      { id: "l03-d5", type: "output", topic: "control-flow", gotchas: ["ternary-type"], difficulty: 2, points: 1, source: "Learn L03",
+        prompt: "What prints?", code: 'int x = -4;\nSystem.out.println(x > 0 ? "pos" : "neg");', answer: "neg",
+        explanation: "x > 0 is false, so the ternary evaluates to its second value, \"neg\"." },
+      { id: "l03-d6", type: "short", topic: "control-flow", difficulty: 3, points: 1, source: "Learn L03",
+        prompt: "After `int x = 1; boolean b = (x > 1) & (x++ < 10);`, what is x?", answer: "2",
+        explanation: "Single & is unconditional — it evaluates the right side even though the left is false, so x++ runs and x becomes 2. With && it would stay 1." },
+      { id: "l03-d7", type: "mc", topic: "control-flow", gotchas: ["operator-precedence"], difficulty: 2, points: 1, source: "Learn L03",
+        prompt: "How does Java group `a || b && c`?", choices: ["(a || b) && c", "a || (b && c)", "strictly left to right", "compile error"], correctIndex: 1,
+        explanation: "&& binds tighter than ||, so the expression groups as a || (b && c)." },
+      { id: "l03-d8", type: "output", topic: "control-flow", difficulty: 2, points: 1, source: "Learn L03",
+        prompt: "What grade prints for score = 95?", code: 'int score = 95;\nif (score >= 70) System.out.print("C");\nelse if (score >= 90) System.out.print("A");\nelse System.out.print("F");', answer: "C",
+        explanation: "A chain runs the FIRST true branch. 95 >= 70 is true → prints C and skips the rest. The >= 90 branch is unreachable for anyone over 70 — order tests narrowest-first." },
     ],
   },
 
@@ -208,6 +323,39 @@ export const midtermLectures: Lecture[] = [
         code: '"Abraham".substring(3)      // "aham" (index 3 to end)\n"Abraham".substring(3, 5)   // "ah"  (3 up to but not 5)\n1 + 2 + "x"                 // "3x"  (1+2 first, then concat)\n"x" + 1 + 2                 // "x12" (String first → all concat)',
         trap: "Concatenation goes strictly left to right. Once a String appears, everything after it is glued on as text — numbers stop adding.",
       },
+      {
+        heading: "Testing & converting characters: the Character class",
+        idea: "The `Character` class has static helpers to ask yes/no questions about a char and to flip its case — clearer and safer than memorizing ASCII ranges by hand.",
+        detail:
+          "`Character.isDigit(ch)`, `isLetter(ch)`, `isLetterOrDigit(ch)`, `isUpperCase(ch)`, `isLowerCase(ch)` return booleans; `Character.toUpperCase(ch)` / `toLowerCase(ch)` return the converted char.",
+        code: "char ch = '7';\nCharacter.isDigit(ch)        // true\nCharacter.isLetter(ch)       // false\nCharacter.toUpperCase('a')   // 'A'",
+        trap: "`Character.isDigit('7')` is true, but the char `'7'` is NOT the number 7 — its code is 55. To get a digit's numeric value, subtract `'0'`: `'7' - '0'` is 7.",
+      },
+      {
+        heading: "String → number and back",
+        idea: "Text typed by a user arrives as a String, even \"15\". To do math you must PARSE it into a number; to build output text you glue a number onto a String.",
+        detail:
+          "`Integer.parseInt(\"15\")` gives the int 15; `Double.parseDouble(\"56.7\")` gives 56.7. The other direction is just `\"\" + n` — anything concatenated with a String becomes a String.",
+        code: 'int n = Integer.parseInt("15");        // 15\ndouble d = Double.parseDouble("56.7"); // 56.7\nString s = "" + n;                      // "15"',
+        trap: '`"15" + 1` is "151" (concatenation), but `Integer.parseInt("15") + 1` is 16 (real math). Parsing junk like `Integer.parseInt("5x")` throws NumberFormatException at runtime.',
+      },
+      {
+        heading: "Formatted output with printf",
+        idea: "`System.out.printf` prints from a TEMPLATE: a format string where each `%…` placeholder is filled by the matching argument, in order. It's how you control decimal places and column widths.",
+        detail:
+          "Common specifiers: `%d` integer, `%f` float/double (6 decimals by default), `%s` string, `%c` char, `%b` boolean. Add `.2` for two decimals (`%.2f`) and a width number to pad (`%5d`).",
+        code: 'int count = 5;\ndouble amount = 45.561899;\nSystem.out.printf("count is %d and amount is %.2f", count, amount);\n// count is 5 and amount is 45.56',
+        codeCaption: "Each %-placeholder consumes the next argument; %.2f rounds to two decimals.",
+        trap: "Placeholders and arguments must match in count and type. `%d` with a double, or too few arguments, throws an exception at runtime — printf does NOT just print the % literally.",
+      },
+      {
+        heading: "Comparing strings in order: compareTo",
+        idea: "`.equals()` answers 'same text?' (true/false). `.compareTo()` answers 'which comes first alphabetically?' — it returns a NEGATIVE number, 0, or POSITIVE.",
+        detail:
+          "`a.compareTo(b)` is negative if a sorts before b, 0 if equal, positive if after. The SIGN is what matters, not the exact number. `equalsIgnoreCase` / `compareToIgnoreCase` do the same while ignoring case.",
+        code: '"apple".compareTo("banana")  // negative (apple comes first)\n"dog".compareTo("dog")       // 0  (equal text)\n"zebra".compareTo("apple")   // positive',
+        trap: "compareTo returns an int to SORT by, not a boolean. Read its sign (< 0 means first comes first). `if (a.compareTo(b))` won't compile — it's an int, not a boolean.",
+      },
     ],
     drills: [
       { id: "l04-d1", type: "short", topic: "char-strings", gotchas: ["char-arithmetic"], difficulty: 1, points: 1, source: "Learn L04",
@@ -224,6 +372,18 @@ export const midtermLectures: Lecture[] = [
       { id: "l04-d5", type: "short", topic: "char-strings", difficulty: 2, points: 1, source: "Learn L04",
         prompt: 'What is `"Abraham".substring(3)`?', answer: "aham",
         explanation: "substring(3) returns from index 3 to the end: A(0)b(1)r(2)a(3)... → \"aham\"." },
+      { id: "l04-d6", type: "short", topic: "char-strings", gotchas: ["char-arithmetic"], difficulty: 2, points: 1, source: "Learn L04",
+        prompt: "What int does `'7' - '0'` give?", answer: "7",
+        explanation: "'7' is code 55, '0' is 48; 55 - 48 = 7. Subtracting '0' converts a digit char to its numeric value." },
+      { id: "l04-d7", type: "short", topic: "char-strings", difficulty: 1, points: 1, source: "Learn L04",
+        prompt: 'What does `Integer.parseInt("15") + 1` evaluate to?', answer: "16",
+        explanation: "parseInt turns \"15\" into the int 15, so 15 + 1 = 16 — real math, not string concatenation." },
+      { id: "l04-d8", type: "output", topic: "char-strings", difficulty: 2, points: 1, source: "Learn L04",
+        prompt: "What prints?", code: 'System.out.printf("%.2f", 3.14159);', answer: "3.14",
+        explanation: "%.2f formats the double to 2 decimal places, rounding to 3.14." },
+      { id: "l04-d9", type: "mc", topic: "char-strings", difficulty: 2, points: 1, source: "Learn L04",
+        prompt: 'What does `"apple".compareTo("banana")` return?', choices: ["a negative number", "0", "a positive number", "true"], correctIndex: 0,
+        explanation: "apple sorts before banana, so compareTo returns a negative number. Read the sign, not the magnitude." },
     ],
   },
 
@@ -260,7 +420,35 @@ export const midtermLectures: Lecture[] = [
       },
       {
         heading: "break and continue",
-        idea: "`break` exits the loop immediately; `continue` skips to the next iteration. Both apply to the innermost loop.",
+        idea: "`break` exits the loop immediately; `continue` skips the rest of THIS pass and jumps to the next iteration. Both act on the innermost loop they sit in.",
+        detail:
+          "`break` is 'stop entirely, I'm done' (you found what you wanted). `continue` is 'skip this one, keep going' (this item doesn't count).",
+        code: "// break: stop once the running sum reaches 100\nwhile (number < 20) {\n  number++;\n  sum += number;\n  if (sum >= 100) break;\n}\n// continue: total 1..20 but skip 10 and 11\nif (number == 10 || number == 11) continue;\nsum += number;",
+        trap: "In nested loops, break/continue only affect the INNER loop — the outer loop keeps running. To escape all the way out you need a flag or a labeled break.",
+      },
+      {
+        heading: "Accumulator pattern: sums and products",
+        idea: "To total or multiply a series, keep a running variable and fold each value in. Seed it correctly: a SUM starts at 0, a PRODUCT starts at 1.",
+        detail:
+          "Each pass updates the running value (`sum += i;` or `product *= i;`). The seed is the identity element — adding 0 or multiplying by 1 changes nothing — so the first real value lands cleanly.",
+        code: "int sum = 0;\nfor (int i = 1; i <= 4; i++) sum += i;       // 1+2+3+4 = 10\nint product = 1;\nfor (int i = 1; i <= 4; i++) product *= i;   // 1*2*3*4 = 24",
+        trap: "Seed a product at 1, never 0 — starting at 0 makes the whole product 0. Seed a sum at 0, not 1.",
+      },
+      {
+        heading: "The stray-semicolon trap",
+        idea: "A `;` immediately after a `for(...)` or `while(...)` header ends the loop right there — its body becomes the empty statement. The `{ }` block you wrote then runs only once (for) or never (while), and the loop spins on its own.",
+        detail:
+          "`for (...) ;` loops doing nothing, then the block after it runs a SINGLE time with the loop variable already out of scope. `while (cond);` is worse — an infinite loop, because the empty body never changes the condition.",
+        code: "for (int i = 0; i < 10; i++) ;   // <-- empty body!\n{\n  System.out.println(i);         // runs ONCE; i is out of scope here → error\n}\n\nint i = 0;\nwhile (i < 10);                  // <-- infinite loop (body never runs)\n{ i++; }",
+        trap: "Never put `;` right after a loop header. It silently empties the body; the braces below execute independently of the loop.",
+      },
+      {
+        heading: "Don't loop on floating-point equality",
+        idea: "Because doubles are approximate (see [[Elementary Programming]]), a loop waiting for a double to hit an EXACT value may never stop.",
+        detail:
+          "`item` starts at 1 and you subtract 0.1 each pass, expecting it to reach 0. It never lands exactly on 0.0, so `while (item != 0)` loops forever. Compare with `>` or `<` against a threshold instead of `==`/`!=`.",
+        code: "double item = 1, sum = 0;\nwhile (item != 0) {   // BUG: item is never exactly 0 → infinite loop\n  sum += item;\n  item -= 0.1;\n}\n// fix: while (item > 0)",
+        trap: "Control a loop with `<` or `>` on a double, never `==`/`!=`. Floating-point rounding can step right over the exact stopping value.",
       },
     ],
     drills: [
@@ -276,6 +464,18 @@ export const midtermLectures: Lecture[] = [
       { id: "l05-d4", type: "short", topic: "control-flow", difficulty: 2, points: 1, source: "Learn L05",
         prompt: "How many stars print?", code: "for (int i = 0; i < 3; i++)\n  for (int j = 0; j < 4; j++)\n    System.out.print('*');", answer: "12",
         explanation: "Inner runs 4× for each of the 3 outer passes: 3 × 4 = 12." },
+      { id: "l05-d5", type: "mc", topic: "control-flow", difficulty: 3, points: 1, source: "Learn L05",
+        prompt: "With i starting at 0, what does `while (i < 10);` followed by `{ i++; }` do?", choices: ["Loops 10 times", "Infinite loop", "Runs the block once", "Compile error"], correctIndex: 1,
+        explanation: "The ; is the (empty) loop body, so i never changes and i<10 stays true forever. The { i++; } block is separate from the loop." },
+      { id: "l05-d6", type: "short", topic: "control-flow", difficulty: 1, points: 1, source: "Learn L05",
+        prompt: "To compute a product in a loop, what value should you seed the accumulator to?", answer: "1",
+        explanation: "A product seeds at 1 (the multiplicative identity). Seeding at 0 would zero out the entire product." },
+      { id: "l05-d7", type: "short", topic: "control-flow", difficulty: 2, points: 1, source: "Learn L05",
+        prompt: "What is sum?", code: "int sum = 0;\nfor (int i = 1; i <= 5; i++) {\n  if (i == 3) continue;\n  sum += i;\n}", answer: "12",
+        explanation: "continue skips the i == 3 pass, so sum = 1 + 2 + 4 + 5 = 12." },
+      { id: "l05-d8", type: "mc", topic: "control-flow", difficulty: 2, points: 1, source: "Learn L05",
+        prompt: "Why can `while (item != 0) item -= 0.1;` (item starts at 1.0) loop forever?", choices: ["item never reaches exactly 0.0 (float rounding)", "0.1 is negative", "while can't use doubles", "it doesn't — it runs 10 times"], correctIndex: 0,
+        explanation: "Doubles are approximate; subtracting 0.1 ten times doesn't land exactly on 0.0, so != 0 stays true. Use > 0 instead." },
     ],
   },
 
@@ -316,6 +516,38 @@ export const midtermLectures: Lecture[] = [
         code: "static void print(int x) { ... }\nstatic void print(double x) { ... }   // OK, different param type\n// static int print(int x)             // ERROR: same params, only return differs",
         trap: "You cannot overload by return type only. `int f(int)` and `String f(int)` collide.",
       },
+      {
+        heading: "The call stack",
+        idea: "Every method call gets a fresh block of memory — a STACK FRAME — holding that call's parameters and locals. Calling a method pushes a frame on top; returning pops it and you resume right below.",
+        detail:
+          "main's frame sits at the bottom. When main calls max(i, j), a max frame is pushed with its own num1, num2, result; max returns a value to main and its frame vanishes. This is also WHY pass-by-value works — max's num1 is a separate box from main's i.",
+        code: "main()   → frame { i=5, j=2, k=? }\n  max(i,j) → frame { num1=5, num2=2, result=? }\n  max returns 5 → its frame popped; k=5 back in main\nmain ends → stack empty",
+        trap: "Locals live only in their own frame; when a method returns they're gone. That's the deep reason a method can't change a caller's primitive — it only ever held a copy. Calls that never return overflow the stack (see [[Recursion]]).",
+      },
+      {
+        heading: "Every path must return a value",
+        idea: "A method with a return type (anything but `void`) MUST return a value on EVERY possible path. If the compiler can trace one route with no `return`, it refuses to compile — even if you 'know' that route can't happen.",
+        detail:
+          "The classic miss: an if / else-if chain whose LAST branch is `else if` instead of a plain `else`. The compiler asks 'what if all those conditions are false?' and sees a path that falls off the end with no return.",
+        code: "public static int sign(int n) {\n  if (n > 0) return 1;\n  else if (n == 0) return 0;\n  else if (n < 0) return -1;  // compiler: what if none match?\n}                             // ERROR: missing return\n// fix: make the last branch a plain `else return -1;`",
+        trap: "End the chain with a plain `else`, not another `else if`. The compiler can't tell that `n < 0` covers every leftover case — it just sees a possible fall-through with no return.",
+      },
+      {
+        heading: "Ambiguous overloading",
+        idea: "Overloads are matched by 'best fit' to the argument types. But if two overloads fit EQUALLY well and neither is more specific, the compiler can't choose — that's an ambiguous invocation, a compile error.",
+        detail:
+          "`max(int, double)` and `max(double, int)` are both reachable from `max(1, 2)`: one arg could widen for the first overload, the other for the second. Neither wins, so it won't compile.",
+        code: "static double max(int a, double b) { ... }\nstatic double max(double a, int b) { ... }\nmax(1, 2);   // ERROR: ambiguous — both overloads match equally well",
+        trap: "Overloading resolves at COMPILE time by argument types. A tie between two equally good matches is an error, not a coin flip — pass types that clearly favor one overload.",
+      },
+      {
+        heading: "Scope of local variables",
+        idea: "A local variable exists from its declaration to the end of the `{ }` block that contains it — and nowhere else. Outside that block, the name simply doesn't exist.",
+        detail:
+          "A for-loop's `int i` is scoped to the loop; using `i` afterward is a compile error. And a nested block can't re-declare a name already in scope from an enclosing block.",
+        code: "for (int i = 0; i < 10; i++) {\n  // i is valid here\n}\nSystem.out.println(i);   // ERROR: i is out of scope\n\nint x = 1;\nfor (int j = 0; j < 3; j++) {\n  // int x = 0;   // ERROR: x already in scope\n}",
+        trap: "A variable declared inside a loop or if is invisible outside that block. If you need its value afterward, declare it BEFORE the block.",
+      },
     ],
     drills: [
       { id: "l06-d1", type: "mc", topic: "methods", gotchas: ["reference-vs-value"], difficulty: 2, points: 1, source: "Learn L06",
@@ -332,6 +564,18 @@ export const midtermLectures: Lecture[] = [
         referenceSolution: "public static int max(int a, int b) {\n  if (a > b) return a;\n  else return b;\n}",
         rubric: ["Returns an int on every path", "Compares a and b and returns the larger"],
         explanation: "Every path returns an int matching the declared type. (return a > b ? a : b; also works.)" },
+      { id: "l06-d5", type: "mc", topic: "methods", difficulty: 3, points: 1, source: "Learn L06",
+        prompt: "Why won't this compile? `int f(int n){ if(n>0) return 1; else if(n<=0) return 0; }`", choices: ["It compiles fine", "Missing return: the compiler sees a possible path with no return", "Wrong return type", "n is unused"], correctIndex: 1,
+        explanation: "n>0 and n<=0 do cover everything, but the compiler reasons branch-by-branch and still sees a route off the end with no return. End with a plain else." },
+      { id: "l06-d6", type: "mc", topic: "methods", gotchas: ["overloading"], difficulty: 3, points: 1, source: "Learn L06",
+        prompt: "Given `max(int,double)` and `max(double,int)`, what does the call `max(1, 2)` do?", choices: ["Calls the first", "Calls the second", "Compile error (ambiguous)", "Runtime error"], correctIndex: 2,
+        explanation: "Both overloads match equally well and neither is more specific — an ambiguous invocation, which is a compile error." },
+      { id: "l06-d7", type: "mc", topic: "methods", difficulty: 2, points: 1, source: "Learn L06",
+        prompt: "After `for (int i = 0; i < 5; i++) {}`, can you use `i` on the next line?", choices: ["Yes", "No — i is scoped to the loop"], correctIndex: 1,
+        explanation: "A variable declared in the for-header lives only inside the loop. Declare it before the loop if you need it afterward." },
+      { id: "l06-d8", type: "mc", topic: "methods", gotchas: ["reference-vs-value"], difficulty: 2, points: 1, source: "Learn L06",
+        prompt: "When a method returns, what happens to its local variables?", choices: ["They persist globally", "Its stack frame is popped and they're gone", "They move to the caller", "They become static"], correctIndex: 1,
+        explanation: "Each call gets a stack frame for its locals; on return the frame is popped and the locals vanish. That's why a method only ever edits its own copy of a primitive." },
     ],
   },
 
@@ -366,8 +610,74 @@ export const midtermLectures: Lecture[] = [
         trap: "`y = x` does NOT copy the array — it copies the reference. To truly copy, loop or use Arrays.copyOf." ,
       },
       {
-        heading: "Passing arrays to methods",
-        idea: "Because the reference is passed, a method can change the array's elements and the caller sees it. (Reassigning the parameter to a new array does not escape the method.)",
+        heading: "Passing & returning arrays",
+        idea: "Because the reference is passed, a method can change the array's elements and the caller sees it. (Reassigning the parameter to a new array does NOT escape the method.) A method can also build and RETURN a brand-new array.",
+        detail:
+          "Mutating elements through the parameter is visible to the caller. Returning an array is how a method hands back something it built — like a reversed copy — without disturbing the original.",
+        code: "// fills the caller's array (visible to caller)\nstatic void zeroOut(int[] x) { for (int i=0;i<x.length;i++) x[i]=0; }\n// builds and RETURNS a new array (original untouched)\nstatic int[] reversed(int[] x) {\n  int[] r = new int[x.length];\n  for (int i=0;i<x.length;i++) r[x.length-1-i] = x[i];\n  return r;\n}",
+        trap: "Mutating elements is visible; reassigning the parameter (`x = new int[3]`) is not. If you need a changed array back, mutate it in place or return the new one.",
+      },
+      {
+        heading: "The enhanced for (for-each) loop",
+        idea: "When you only need to VISIT every element in order — not change them, not track the index — the for-each loop is cleaner: `for (type v : array)` hands you each element in turn as `v`.",
+        detail:
+          "Read it as 'for each value v in array.' No index, no `< length`, no off-by-one risk. The catch: you get a COPY of each element, so assigning to `v` does NOT change the array, and you can't go in reverse or peek at neighbors. For those, use an indexed for.",
+        code: "int[] a = {3, 1, 4, 1, 5};\nint total = 0;\nfor (int v : a) total += v;     // sum = 14\n// for (int v : a) v = 0;        // does NOT zero the array",
+        trap: "for-each is read-only for primitives: `v = 0` changes the loop copy, not `a[i]`. To MODIFY elements (or walk backward), you need an index loop.",
+      },
+      {
+        heading: "Copying an array (= is not a copy)",
+        idea: "`b = a` does NOT copy an array — it makes b point at the SAME array (the aliasing from above). To get an independent copy you must duplicate the elements.",
+        detail:
+          "Three ways: a manual loop into a new array, `System.arraycopy(src, srcPos, dst, dstPos, len)`, or `Arrays.copyOf(src, newLength)`. Each gives a separate array, so changing one no longer touches the other.",
+        code: "int[] a = {2, 3, 1, 5};\nint[] b = a;                       // SAME array (alias) — NOT a copy\nint[] c = new int[a.length];\nfor (int i = 0; i < a.length; i++) c[i] = a[i];   // real copy\nint[] d = java.util.Arrays.copyOf(a, a.length);   // real copy",
+        trap: "After `b = a`, `b[0] = 99` also changes `a[0]`. Only a loop, System.arraycopy, or Arrays.copyOf makes a true independent copy.",
+      },
+      {
+        heading: "Common array algorithms: max, min, sum",
+        idea: "Three patterns appear constantly: total everything, find the largest, find the smallest. Each seeds from the array, then sweeps through once.",
+        detail:
+          "Sum seeds at 0 and adds each element. Max/min seed at element `[0]` (NOT 0 — the data might be all negative!) and update whenever they meet something bigger/smaller.",
+        code: "double max = a[0];\nfor (int i = 1; i < a.length; i++)\n  if (a[i] > max) max = a[i];   // largest\n// min: same idea with < ;  sum: seed 0 and += each element",
+        trap: "Seed max/min with `a[0]`, not 0. Seeding max at 0 breaks on an all-negative array — it would wrongly report 0 as the maximum.",
+      },
+      {
+        heading: "Linear search",
+        idea: "To find a value in an UNORDERED array, check elements one by one until you hit it. Return the index where you found it, or -1 if you run off the end with no match.",
+        detail:
+          "Linear search works on any array, sorted or not. It may look at every element, so for n elements it does up to n comparisons.",
+        code: "public static int linearSearch(int[] list, int key) {\n  for (int i = 0; i < list.length; i++)\n    if (key == list[i]) return i;\n  return -1;   // not found\n}",
+        trap: "'Not found' is -1, a sentinel — not 0 (that's a real index) and not an exception. Always check for -1 before using the result as an index.",
+      },
+      {
+        heading: "Binary search (needs a sorted array)",
+        idea: "If the array is already SORTED, you can find a value far faster by halving the search range each step: compare the key to the MIDDLE element, and one comparison throws away half the array.",
+        detail:
+          "Track `low` and `high`. Look at `mid = (low+high)/2`. If key < middle, the answer is in the lower half (`high = mid-1`); if key > middle, the upper half (`low = mid+1`); if equal, found it. For n elements it takes only about log2(n) steps.",
+        code: "public static int binarySearch(int[] list, int key) {\n  int low = 0, high = list.length - 1;\n  while (low <= high) {\n    int mid = (low + high) / 2;\n    if (key < list[mid]) high = mid - 1;\n    else if (key > list[mid]) low = mid + 1;\n    else return mid;        // found\n  }\n  return -1;                // not found\n}",
+        trap: "Binary search ONLY works on a sorted array — on unsorted data it returns garbage. The #1 binary-search exam question is really 'is the array sorted?'",
+      },
+      {
+        heading: "Selection sort",
+        idea: "Selection sort builds the sorted list from the front: find the SMALLEST remaining element and swap it into the next position. Repeat until the whole array is ordered.",
+        detail:
+          "Pass i finds the minimum of positions i..end and swaps it into index i. After pass i, positions 0..i are locked in their FINAL sorted order. It's n passes, each scanning the rest — simple, not the fastest.",
+        code: "for (int i = 0; i < a.length; i++) {\n  int minIdx = i;\n  for (int j = i + 1; j < a.length; j++)\n    if (a[j] < a[minIdx]) minIdx = j;\n  int t = a[i]; a[i] = a[minIdx]; a[minIdx] = t;  // swap min to front\n}",
+        trap: "After k passes, the first k elements are in FINAL position — a common 'what does the array look like mid-sort?' question. Each swap locks one element forever.",
+      },
+      {
+        heading: "Insertion sort",
+        idea: "Insertion sort grows a sorted sublist at the front, like sorting a hand of cards: take the next element and slide it back into its correct spot among the already-sorted ones.",
+        detail:
+          "For each element from index 1 on, shift the larger sorted elements one slot right to open a gap, then drop the current element into the gap. After step k, the first k+1 elements are sorted among themselves.",
+        code: "for (int i = 1; i < a.length; i++) {\n  int cur = a[i], j = i - 1;\n  while (j >= 0 && a[j] > cur) {\n    a[j + 1] = a[j];   // shift right\n    j--;\n  }\n  a[j + 1] = cur;       // drop into the gap\n}",
+        trap: "Insertion sort's front is sorted among ITSELF but may still need bigger values from later — unlike selection sort, where each locked element is already in its FINAL place.",
+      },
+      {
+        heading: "The Arrays utility class",
+        idea: "`java.util.Arrays` does the common jobs so you don't hand-roll them: `Arrays.sort(a)` sorts in place, `Arrays.binarySearch(a, key)` searches a SORTED array, `Arrays.copyOf(a, n)` copies, `Arrays.toString(a)` prints nicely, `Arrays.fill(a, v)` fills.",
+        code: "import java.util.Arrays;\nint[] a = {6, 4, 1, 9};\nArrays.sort(a);                          // {1, 4, 6, 9}\nint i = Arrays.binarySearch(a, 6);       // 2 (array must be sorted first)\nSystem.out.println(Arrays.toString(a));  // [1, 4, 6, 9]",
+        trap: "`Arrays.binarySearch` assumes the array is already sorted — call `Arrays.sort` first. And `System.out.println(a)` on an array prints a hashcode like [I@1b6d, not the elements — use `Arrays.toString(a)`.",
       },
     ],
     drills: [
@@ -383,6 +693,24 @@ export const midtermLectures: Lecture[] = [
       { id: "l07-d4", type: "short", topic: "arrays", difficulty: 1, points: 1, source: "Learn L07",
         prompt: "How do you get an array's size? Write the expression for array `a`.", answer: "a.length", acceptable: ["a.length;"],
         explanation: "Arrays use the field `.length` (no parentheses). Strings use the method `.length()`." },
+      { id: "l07-d5", type: "mc", topic: "arrays", difficulty: 2, points: 1, source: "Learn L07",
+        prompt: "Does `for (int v : a) v = 0;` set every element of a to 0?", choices: ["Yes", "No — v is a copy; the array is unchanged"], correctIndex: 1,
+        explanation: "for-each hands you a copy of each primitive element. Assigning v changes the copy, not a[i]. Use an index loop to modify the array." },
+      { id: "l07-d6", type: "output", topic: "arrays", difficulty: 2, points: 1, source: "Learn L07",
+        prompt: "What prints?", code: "int[] a = {1, 2, 3};\nint[] b = java.util.Arrays.copyOf(a, 3);\nb[0] = 9;\nSystem.out.println(a[0]);", answer: "1",
+        explanation: "Arrays.copyOf makes an INDEPENDENT copy, so changing b[0] does not affect a[0]. (With b = a it would print 9.)" },
+      { id: "l07-d7", type: "mc", topic: "arrays", difficulty: 2, points: 1, source: "Learn L07",
+        prompt: "Binary search requires the array to be:", choices: ["sorted", "all positive", "even in length", "nothing special"], correctIndex: 0,
+        explanation: "Binary search halves the range using order, so it only works on a sorted array. On unsorted data it returns garbage." },
+      { id: "l07-d8", type: "short", topic: "arrays", difficulty: 1, points: 1, source: "Learn L07",
+        prompt: "What does a search return when the key is NOT in the array (by convention)?", answer: "-1",
+        explanation: "Searches return -1 for 'not found' — 0 can't be the sentinel because it's a valid index." },
+      { id: "l07-d9", type: "short", topic: "arrays", difficulty: 3, points: 1, source: "Learn L07",
+        prompt: "Selection sort on {5, 2, 4, 1}: what is the array after the FIRST pass (one swap)?", answer: "1 2 4 5", acceptable: ["1,2,4,5", "{1,2,4,5}", "1 2 4 5"],
+        explanation: "Pass 1 finds the min (1) and swaps it with the front (5): {1, 2, 4, 5}. The 1 is now in its final position." },
+      { id: "l07-d10", type: "mc", topic: "arrays", difficulty: 2, points: 1, source: "Learn L07",
+        prompt: "What does `System.out.println(myArray)` print for an int[]?", choices: ["the elements, like [1, 2, 3]", "a hashcode, like [I@1b6d", "the length", "compile error"], correctIndex: 1,
+        explanation: "Printing an array directly shows type + hashcode. Use Arrays.toString(myArray) to see the elements." },
     ],
   },
 
@@ -416,6 +744,30 @@ export const midtermLectures: Lecture[] = [
         code: "for (int r = 0; r < grid.length; r++)\n  for (int c = 0; c < grid[r].length; c++)\n    System.out.print(grid[r][c] + \" \");",
         codeCaption: "Using grid[r].length (not a fixed number) handles ragged arrays where rows differ in length.",
       },
+      {
+        heading: "Ragged arrays",
+        idea: "A 2D array's rows do NOT have to be the same length — that's a RAGGED array. Each row is its own separate array, so each can be a different size.",
+        detail:
+          "You build one with `new int[3][]` (rows known, columns left open), then give each row its own array. This is exactly why you traverse with `grid[r].length`, not a fixed column count — it adapts to each row's real length.",
+        code: "int[][] tri = {\n  {1, 2, 3, 4, 5},   // row 0: length 5\n  {1, 2, 3},         // row 1: length 3\n  {1}                // row 2: length 1\n};\ntri.length;        // 3 rows\ntri[0].length;     // 5\ntri[2].length;     // 1",
+        trap: "On a ragged array, a fixed inner bound like `c < tri[0].length` overruns the shorter rows → ArrayIndexOutOfBoundsException. Always loop with `c < tri[r].length`.",
+      },
+      {
+        heading: "Summing by column",
+        idea: "To total each COLUMN instead of each row, flip the loops: make the OUTER loop the column and let the inner loop sweep the rows.",
+        detail:
+          "For column c, walk every row r and add `matrix[r][c]`. Same cells as a row-sum, just visited column-major instead of row-major. (Assumes a rectangular grid.)",
+        code: 'for (int c = 0; c < matrix[0].length; c++) {\n  int total = 0;\n  for (int r = 0; r < matrix.length; r++)\n    total += matrix[r][c];\n  System.out.println("col " + c + " sum = " + total);\n}',
+        trap: "Whichever index you want to total over, the OTHER one is the outer loop. Column sums put the column on the outside and sweep rows inside.",
+      },
+      {
+        heading: "N-dimensional arrays",
+        idea: "Nothing stops at 2D. `new int[3][4][5]` is a 3D array — an array of 2D grids. Each extra `[]` is one more nesting level, and one more nested loop to walk it.",
+        detail:
+          "Read `int[][][] scores = new int[2][100][25]` as 2 courses × 100 students × 25 lab grades. Access is `scores[course][student][lab]`; visiting every cell needs three nested loops.",
+        code: "int[][][] scores = new int[2][100][25];\nscores[0][0][0] = 3;\n// visit all cells with three nested loops over\n//   m.length, then m[i].length, then m[i][j].length",
+        trap: "Each dimension has its OWN length: `scores.length` is 2, `scores[0].length` is 100, `scores[0][0].length` is 25. Use the right one at each level.",
+      },
     ],
     drills: [
       { id: "l08-d1", type: "short", topic: "arrays", difficulty: 1, points: 1, source: "Learn L08",
@@ -427,6 +779,15 @@ export const midtermLectures: Lecture[] = [
       { id: "l08-d3", type: "short", topic: "arrays", difficulty: 2, points: 1, source: "Learn L08",
         prompt: "How many total cells does `new int[3][4]` have?", answer: "12",
         explanation: "3 rows × 4 columns = 12 cells." },
+      { id: "l08-d4", type: "short", topic: "arrays", gotchas: ["array-oob"], difficulty: 2, points: 1, source: "Learn L08",
+        prompt: "For `int[][] m = {{1,2,3,4,5},{1,2,3},{1}};`, what is `m[1].length`?", answer: "3",
+        explanation: "Row 1 is {1,2,3}, a length-3 array. In a ragged array each row has its own length." },
+      { id: "l08-d5", type: "mc", topic: "arrays", gotchas: ["array-oob"], difficulty: 2, points: 1, source: "Learn L08",
+        prompt: "On a ragged array, why loop with `c < m[r].length` instead of `c < m[0].length`?", choices: ["Style only", "Other rows may be shorter than m[0] → out-of-bounds", "It runs faster", "No real reason"], correctIndex: 1,
+        explanation: "Rows can differ in length; a fixed m[0].length bound overruns any shorter row and throws ArrayIndexOutOfBoundsException." },
+      { id: "l08-d6", type: "short", topic: "arrays", difficulty: 2, points: 1, source: "Learn L08",
+        prompt: "For `int[][][] s = new int[2][100][25];`, what is `s[0].length`?", answer: "100",
+        explanation: "s.length is 2, s[0].length is 100, s[0][0].length is 25 — each dimension carries its own length." },
     ],
   },
 
@@ -463,6 +824,22 @@ export const midtermLectures: Lecture[] = [
         idea: "switch on an enum lets you handle each constant; you write the bare constant name in each case (no `Day.` prefix).",
         code: "switch (d) {\n  case MON: ...; break;   // not case Day.MON\n  case FRI: ...; break;\n}",
       },
+      {
+        heading: "Built-in enum methods",
+        idea: "Beyond `name()`, `ordinal()`, and `values()`, every enum constant inherits `equals()`, `toString()` (returns the name), and `compareTo()` — which compares by ORDINAL (declaration order).",
+        detail:
+          "An enum is secretly a class that extends Object and implements Comparable, so it comes with these methods for free. `compareTo` returns the difference of ordinals, so its sign tells you which constant was declared first.",
+        code: 'Day.FRIDAY.compareTo(Day.THURSDAY)  // 1  (ordinal 5 - ordinal 4)\nDay.MON.toString()                  // "MON"\nday1.equals(day2)                   // same constant?',
+        trap: "compareTo on enums uses the ORDINAL (the order you listed them), not alphabetical order. Reorder the constants and every comparison flips.",
+      },
+      {
+        heading: "Enums with fields, constructors, and methods",
+        idea: "An enum can carry DATA. Give each constant an argument, add a private field and a constructor to receive it, and now every constant has its own attached value — plus methods to read it.",
+        detail:
+          "Each constant's argument is passed to the (private) constructor the first time that constant is used. `RED(\"Please stop\")` runs the constructor with \"Please stop\" and stores it. The constructor is private because you never `new` an enum — the listed constants are its only instances.",
+        code: 'public enum TrafficLight {\n  RED("Please stop"), GREEN("Please go"), YELLOW("Please caution");\n  private String description;\n  private TrafficLight(String d) { this.description = d; }\n  public String getDescription() { return description; }\n}\n// TrafficLight.RED.getDescription()  →  "Please stop"',
+        trap: "The enum constructor is private — you can't call `new TrafficLight(...)`. The constants ARE the only instances, and each one's argument feeds the constructor exactly once.",
+      },
     ],
     drills: [
       { id: "l09-d1", type: "short", topic: "enums", difficulty: 1, points: 1, source: "Learn L09",
@@ -474,6 +851,15 @@ export const midtermLectures: Lecture[] = [
       { id: "l09-d3", type: "mc", topic: "enums", difficulty: 2, points: 1, source: "Learn L09",
         prompt: "Main advantage of an enum over `int` constants?", choices: ["Runs faster", "Only the listed values are possible (compile-time safety)", "Uses less memory", "Allows decimals"], correctIndex: 1,
         explanation: "An enum variable can only hold a declared constant — illegal values are caught at compile time, unlike loose ints." },
+      { id: "l09-d4", type: "short", topic: "enums", difficulty: 2, points: 1, source: "Learn L09",
+        prompt: "For the TrafficLight enum above, what does `TrafficLight.RED.getDescription()` return?", answer: "Please stop",
+        explanation: "RED(\"Please stop\") passes \"Please stop\" to the constructor, which stores it in description; getDescription() returns it." },
+      { id: "l09-d5", type: "mc", topic: "enums", difficulty: 2, points: 1, source: "Learn L09",
+        prompt: "Can you write `new TrafficLight(\"x\")` outside the enum?", choices: ["Yes", "No — enum constructors are private; the constants are the only instances"], correctIndex: 1,
+        explanation: "Enum constructors can't be called with new. The listed constants are the only instances, each created once at class load." },
+      { id: "l09-d6", type: "mc", topic: "enums", difficulty: 2, points: 1, source: "Learn L09",
+        prompt: "`enum Size { S, M, L }`. What is `Size.S.compareTo(Size.L)`?", choices: ["negative (S before L)", "0", "positive", "based on the letters"], correctIndex: 0,
+        explanation: "compareTo uses ordinal: S=0, L=2, so 0 - 2 is negative. It's declaration order, not alphabetical." },
     ],
   },
 ];

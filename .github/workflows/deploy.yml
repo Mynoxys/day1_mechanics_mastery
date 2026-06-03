@@ -37,6 +37,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Setup Pages
+        # enablement: true asks GitHub to set the Pages build source to
+        # "GitHub Actions" (build_type: workflow). This stops the legacy
+        # "pages build and deployment" branch builder from serving the repo
+        # root (which has no index.html → 404) and overriding this deploy.
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - name: Build
         # VITE_BASE must match the project-page subpath: /<repo-name>/
         env:

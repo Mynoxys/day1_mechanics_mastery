@@ -22,6 +22,9 @@ export default function Home() {
             </h1>
           </div>
           <nav className="hidden md:flex gap-6 items-center">
+            <Link href="/soc105">
+              <span className="text-sm font-semibold text-[var(--soc-accent)] hover:opacity-80 cursor-pointer">SOC 105</span>
+            </Link>
             <Link href="/cse114/learn">
               <span className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-600 cursor-pointer">Learn</span>
             </Link>
@@ -34,6 +37,29 @@ export default function Home() {
           </nav>
         </div>
       </header>
+
+      {/* SOC 105 — current course (Fall 2026) */}
+      <section className="pt-8 md:pt-10 bg-background">
+        <div className="container max-w-5xl">
+          <Link href="/soc105">
+            <Card className="p-5 sm:p-6 cursor-pointer hover:shadow-lg transition-shadow border-l-4" style={{ borderLeftColor: "var(--soc-accent)" }}>
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <div className="text-xs font-bold tracking-wider uppercase text-[var(--soc-accent)]">Now · SOC 105</div>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Intro to Sociology — exam trainer</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 max-w-xl">
+                    Contrast sets, fresh-scenario drills, false friends, big facts, and 60-question mock exams built from the
+                    professor’s “How I test” rules.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-2 rounded-lg bg-[var(--soc-accent)] text-white px-5 py-3 font-semibold">
+                  <Brain className="w-5 h-5" /> Open SOC 105 <ChevronRight className="w-4 h-4" />
+                </span>
+              </div>
+            </Card>
+          </Link>
+        </div>
+      </section>
 
       {/* TODAY'S PLAN — primary dashboard. Replaces the static CSE 114 hero. */}
       <section className="py-10 md:py-14 bg-gradient-to-br from-orange-50 via-white to-rose-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">

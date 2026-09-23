@@ -40,6 +40,14 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  /* SOC 105 — one hue per exam question class + the false-friend trap */
+  --color-soc-conceptual: var(--soc-conceptual);
+  --color-soc-application: var(--soc-application);
+  --color-soc-empirical: var(--soc-empirical);
+  --color-soc-false-friend: var(--soc-false-friend);
+  --color-soc-right: var(--soc-right);
+  --color-soc-wrong: var(--soc-wrong);
+  --color-soc-accent: var(--soc-accent);
 }
 
 :root {
@@ -68,6 +76,15 @@
   --color-power: #c026d3;
   --color-digital-1: #2563eb;
   --color-digital-0: #94a3b8;
+
+  /* SOC 105 - question classes from the "How I test" syllabus (not physics meanings) */
+  --soc-conceptual: #4f46e5;
+  --soc-application: #0d9488;
+  --soc-empirical: #b45309;
+  --soc-false-friend: #be185d;
+  --soc-right: #15803d;
+  --soc-wrong: #b91c1c;
+  --soc-accent: #6d28d9;
 
   /* Primary Colors */
   --primary: #1e40af;
@@ -139,6 +156,13 @@
   --sidebar-accent-foreground:  oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.488 0.243 264.376);
+  --soc-conceptual: #818cf8;
+  --soc-application: #2dd4bf;
+  --soc-empirical: #fbbf24;
+  --soc-false-friend: #f472b6;
+  --soc-right: #4ade80;
+  --soc-wrong: #f87171;
+  --soc-accent: #a78bfa;
 }
 
 @layer base {

@@ -26,7 +26,7 @@ export interface ExamDef {
 
 export const EXAMS: ExamDef[] = [
   { id: "exam1", label: "Exam 1", date: "2026-09-24", units: ["u1", "u2", "u3", "u4"], length: 60 },
-  { id: "exam2", label: "Exam 2", units: ["u5", "u6", "u8", "u9"], length: 60, reviewUnits: ["u1", "u2", "u3", "u4"] },
+  { id: "exam2", label: "Exam 2", date: "2026-10-29", units: ["u5", "u6", "u8", "u9"], length: 60, reviewUnits: ["u1", "u2", "u3", "u4"] },
 ];
 
 export const EXAM_BY_ID: Record<string, ExamDef> = Object.fromEntries(EXAMS.map((e) => [e.id, e]));

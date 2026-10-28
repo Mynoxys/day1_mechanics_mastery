@@ -4,16 +4,41 @@ import { unit1 } from "./unit1";
 import { unit2 } from "./unit2";
 import { unit3 } from "./unit3";
 import { unit4 } from "./unit4";
+import { unit5 } from "./unit5";
+import { unit6 } from "./unit6";
+import { unit8 } from "./unit8";
+import { unit9 } from "./unit9";
 
-export const UNITS: Unit[] = [unit1, unit2, unit3, unit4];
+// Unit 7 (Identity) is not on Exam 2 and is intentionally not built yet.
+export const UNITS: Unit[] = [unit1, unit2, unit3, unit4, unit5, unit6, unit8, unit9];
 
-// The next in-class exam. Update when a new exam is announced.
-export const NEXT_EXAM = {
-  label: "Exam 1",
-  date: "2026-09-24", // Thursday, in class
-  units: ["u1", "u2", "u3", "u4"] as UnitId[],
-  length: 60,
-};
+// In-class exams. Each gets its own hub view, mastery counter, mock, and drills.
+export interface ExamDef {
+  id: string;
+  label: string;
+  date?: string; // YYYY-MM-DD, in class; undefined = not announced yet
+  units: UnitId[];
+  length: number; // real exam length (all MC/TF on scantron, per the syllabus)
+  // Earlier units the student can opt to mix into this exam's mock and drills.
+  // No Exam 2 sample shows whether it is cumulative, so review is opt-in.
+  reviewUnits?: UnitId[];
+}
+
+export const EXAMS: ExamDef[] = [
+  { id: "exam1", label: "Exam 1", date: "2026-09-24", units: ["u1", "u2", "u3", "u4"], length: 60 },
+  { id: "exam2", label: "Exam 2", units: ["u5", "u6", "u8", "u9"], length: 60, reviewUnits: ["u1", "u2", "u3", "u4"] },
+];
+
+export const EXAM_BY_ID: Record<string, ExamDef> = Object.fromEntries(EXAMS.map((e) => [e.id, e]));
+
+// Share of a mixed mock drawn from the review units (the rest stays on the exam's own units).
+export const REVIEW_SHARE = 0.2;
+
+// Default exam = the first one not yet in the past (undated counts as upcoming).
+export function defaultExamId(today = new Date()): string {
+  const iso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  return (EXAMS.find((e) => !e.date || e.date >= iso) ?? EXAMS[EXAMS.length - 1]).id;
+}
 
 export const UNIT_BY_ID: Record<string, Unit> = Object.fromEntries(UNITS.map((u) => [u.id, u]));
 

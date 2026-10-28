@@ -48,8 +48,8 @@ export default function Home() {
                   <div className="text-xs font-bold tracking-wider uppercase text-[var(--soc-accent)]">Now · SOC 105</div>
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Intro to Sociology — exam trainer</h2>
                   <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 max-w-xl">
-                    Contrast sets, fresh-scenario drills, false friends, big facts, and 60-question mock exams built from the
-                    professor’s “How I test” rules.
+                    Exam 1 (units 1–4) and Exam 2 (units 5, 6, 8, 9): contrast sets, fresh-scenario drills, false friends, big
+                    facts, flashcards, and 60-question mock exams built from the professor’s “How I test” rules.
                   </p>
                 </div>
                 <span className="inline-flex items-center gap-2 rounded-lg bg-[var(--soc-accent)] text-white px-5 py-3 font-semibold">

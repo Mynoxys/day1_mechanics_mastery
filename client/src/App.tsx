@@ -71,6 +71,7 @@ import SOC105Hub from "./pages/soc105/SOC105Hub";
 import SOC105Unit from "./pages/soc105/SOC105Unit";
 import SOC105Drill from "./pages/soc105/SOC105Drill";
 import SOC105Exam from "./pages/soc105/SOC105Exam";
+import SOC105Cards from "./pages/soc105/SOC105Cards";
 
 // Alias Tension as CoupledSystems for routing
 const CoupledSystems = Tension;
@@ -154,6 +155,7 @@ function Router() {
       <Route path={"/soc105/unit/:unitId"} component={SOC105Unit} />
       <Route path={"/soc105/drill"} component={SOC105Drill} />
       <Route path={"/soc105/exam"} component={SOC105Exam} />
+      <Route path={"/soc105/cards"} component={SOC105Cards} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />

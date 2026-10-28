@@ -76,7 +76,7 @@ export function QuestionView({ q, order, selected, revealed, onSelect, number }:
       </div>
       <p className="text-lg sm:text-xl leading-relaxed font-medium mb-5">
         {q.format === "tf" && <span className="text-muted-foreground">True/False: </span>}
-        {q.stem}
+        {q.format === "tf" ? q.stem.replace(/^True\/False:\s*/i, "") : q.stem}
       </p>
       <div className="space-y-2.5">
         {order.map((oi, di) => {

@@ -9,7 +9,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ALL_QUESTIONS, UNITS, type BankQuestion } from "@/components/soc105/units";
-import { MASTERED_BOX, optionOrder, pickNext, recordAnswer, tally, useSocStore } from "@/components/soc105/store";
+import { MASTERED_BOX, optionOrder, pickNext, recordAnswer, tally, useSelectedExam, useSocStore } from "@/components/soc105/store";
 import { ProgressBar, QuestionView, SocHeader, keyToIndex } from "@/components/soc105/ui";
 import type { UnitId } from "@/components/soc105/types";
 import { cn } from "@/lib/utils";
@@ -30,14 +30,17 @@ export default function SOC105Drill() {
   const [, navigate] = useLocation();
   const store = useSocStore();
   const mode: Mode = (search.get("mode") as Mode) in MODES ? (search.get("mode") as Mode) : "mixed";
+  const { scopeUnits } = useSelectedExam();
   const unitParam = search.get("units");
-  const units: UnitId[] = unitParam ? (unitParam.split(",") as UnitId[]) : UNITS.map((u) => u.id);
+  // no units in the URL = the selected exam's scope (its units, plus review if mixed in)
+  const parsed = (unitParam ?? "").split(",").filter((id) => UNITS.some((u) => u.id === id)) as UnitId[];
+  const units: UnitId[] = parsed.length ? parsed : scopeUnits;
 
   const setParams = (next: { mode?: Mode; units?: UnitId[] }) => {
     const m = next.mode ?? mode;
     const u = next.units ?? units;
-    const all = u.length === UNITS.length;
-    navigate(`/soc105/drill?mode=${m}${all ? "" : `&units=${u.join(",")}`}`, { replace: true });
+    const isDefault = u.length === scopeUnits.length && u.every((id) => scopeUnits.includes(id));
+    navigate(`/soc105/drill?mode=${m}${isDefault ? "" : `&units=${u.join(",")}`}`, { replace: true });
   };
 
   const pool = useMemo(

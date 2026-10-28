@@ -7,7 +7,7 @@
 // global tick; a question's box sets how many answers later it comes back.
 
 import { useSyncExternalStore } from "react";
-import { ALL_QUESTIONS, type BankQuestion } from "./units";
+import { ALL_QUESTIONS, EXAM_BY_ID, REVIEW_SHARE, defaultExamId, type BankQuestion, type ExamDef } from "./units";
 import type { Skill, Trap, UnitId } from "./types";
 
 // answers until a question is due again, by box (box 4 = mastered, rarely shown)
@@ -26,6 +26,7 @@ export interface ExamSession {
   id: string;
   label: string;
   unitIds: UnitId[];
+  reviewUnitIds?: UnitId[]; // earlier units mixed in (Exam 2 cumulative option)
   questionIds: string[];
   optionOrder: number[][]; // shuffled option indices per question
   answers: (number | null)[]; // index into the ORIGINAL options array
@@ -188,12 +189,15 @@ export function optionOrder(q: BankQuestion): number[] {
 // from the real practice exam (application and conceptual dominate).
 const SKILL_MIX: Record<Skill, number> = { application: 0.4, conceptual: 0.4, empirical: 0.2 };
 
-export function buildExam(unitIds: UnitId[], length: number, label: string): ExamSession {
+// Picks n questions from the given units with the skill mix, tier weighting, and
+// recent-exam avoidance below. `exclude` keeps a second call from re-picking.
+function pickExamQuestions(unitIds: UnitId[], length: number, exclude: BankQuestion[] = []): BankQuestion[] {
   const pool = ALL_QUESTIONS.filter((q) => unitIds.includes(q.unitId));
   // questions used in recent exams go to the back of the line
   const recent = new Set(state.history.slice(0, 3).flatMap((h) => h.questionIds));
   const n = Math.min(length, pool.length);
-  const chosen: BankQuestion[] = [];
+  const chosen: BankQuestion[] = [...exclude];
+  const start = chosen.length;
   // weighted sampling without replacement (key = u^(1/w)), so tier-1 material
   // dominates without crowding out tier 2/3 entirely
   const byWeight = (qs: BankQuestion[]) =>
@@ -216,12 +220,23 @@ export function buildExam(unitIds: UnitId[], length: number, label: string): Exa
       take(unitPool, Math.round((quota * unitPool.length) / Math.max(1, skillPool.length)));
     }
   }
-  if (chosen.length < n) take(pool, n - chosen.length);
-  const questions = shuffle(chosen.slice(0, n));
+  if (chosen.length - start < n) take(pool, n - (chosen.length - start));
+  return chosen.slice(start, start + n);
+}
+
+// reviewUnitIds: earlier units mixed in for a cumulative-style mock; they get
+// REVIEW_SHARE of the questions and the exam's own units get the rest.
+export function buildExam(unitIds: UnitId[], length: number, label: string, reviewUnitIds: UnitId[] = []): ExamSession {
+  const review = reviewUnitIds.filter((u) => !unitIds.includes(u));
+  const reviewN = review.length ? Math.round(length * REVIEW_SHARE) : 0;
+  const main = pickExamQuestions(unitIds, length - reviewN);
+  const extra = reviewN ? pickExamQuestions(review, reviewN, main) : [];
+  const questions = shuffle([...main, ...extra]);
   return {
     id: `${Date.now()}`,
     label,
     unitIds,
+    ...(review.length ? { reviewUnitIds: review } : {}),
     questionIds: questions.map((q) => q.id),
     optionOrder: questions.map(optionOrder),
     answers: questions.map(() => null),
@@ -269,3 +284,56 @@ export function examScore(exam: ExamSession) {
 }
 
 export type { Skill, Trap };
+
+// ---- exam preference (which exam the hub shows, and whether to mix in review) ----
+// Kept under its own key so the progress state above is never rewritten by it.
+
+export interface ExamPrefs {
+  examId: string;
+  mixReview: boolean;
+}
+
+const PREFS_KEY = "soc105:prefs:v1";
+
+function loadPrefs(): ExamPrefs {
+  const fallback = { examId: defaultExamId(), mixReview: false };
+  try {
+    const raw = localStorage.getItem(PREFS_KEY);
+    if (!raw) return fallback;
+    const p = JSON.parse(raw);
+    return { examId: EXAM_BY_ID[p.examId] ? p.examId : fallback.examId, mixReview: !!p.mixReview };
+  } catch {
+    return fallback;
+  }
+}
+
+let prefs: ExamPrefs = loadPrefs();
+const prefListeners = new Set<() => void>();
+
+export function setExamPrefs(patch: Partial<ExamPrefs>) {
+  prefs = { ...prefs, ...patch };
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+  } catch {
+    // keep working in memory
+  }
+  prefListeners.forEach((l) => l());
+}
+
+export function useExamPrefs(): ExamPrefs {
+  return useSyncExternalStore(
+    (l) => {
+      prefListeners.add(l);
+      return () => prefListeners.delete(l);
+    },
+    () => prefs,
+  );
+}
+
+// The selected exam plus the units in scope right now (its own + review if mixed in).
+export function useSelectedExam(): { exam: ExamDef; mixReview: boolean; reviewUnits: UnitId[]; scopeUnits: UnitId[] } {
+  const p = useExamPrefs();
+  const exam = EXAM_BY_ID[p.examId];
+  const reviewUnits = p.mixReview ? (exam.reviewUnits ?? []) : [];
+  return { exam, mixReview: p.mixReview && reviewUnits.length > 0, reviewUnits, scopeUnits: [...exam.units, ...reviewUnits] };
+}

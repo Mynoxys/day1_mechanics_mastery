@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from "react";
 import { Link, useParams } from "wouter";
-import { ExternalLink, Eye, Play, Shuffle } from "lucide-react";
+import { Copy, ExternalLink, Eye, Play, Shuffle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CONCEPT_BY_ID, UNIT_BY_ID, unitOf } from "@/components/soc105/units";
@@ -99,6 +99,11 @@ export default function SOC105Unit() {
             <Link href={`/soc105/exam?units=${unit.id}&n=20`}>
               <Button variant="outline" className="gap-2">
                 <Play className="w-4 h-4" /> 20-question exam
+              </Button>
+            </Link>
+            <Link href={`/soc105/cards?units=${unit.id}`}>
+              <Button variant="outline" className="gap-2">
+                <Copy className="w-4 h-4" /> Flashcards
               </Button>
             </Link>
             <a href={unit.sourceUrl} target="_blank" rel="noreferrer">

@@ -8,7 +8,7 @@ import { Link, useLocation, useSearch } from "wouter";
 import { ArrowLeft, ArrowRight, Flag, Play, Shuffle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { NEXT_EXAM, QUESTION_BY_ID, UNITS, UNIT_BY_ID } from "@/components/soc105/units";
+import { EXAMS, QUESTION_BY_ID, REVIEW_SHARE, UNITS, UNIT_BY_ID } from "@/components/soc105/units";
 import {
   abandonExam,
   buildExam,
@@ -16,6 +16,7 @@ import {
   finishExam,
   startExam,
   updateExam,
+  useSelectedExam,
   useSocStore,
   type ExamSession,
 } from "@/components/soc105/store";
@@ -31,21 +32,30 @@ export default function SOC105Exam() {
 
   if (reviewed) return <Results exam={reviewed} />;
   if (store.activeExam) return <Taking exam={store.activeExam} />;
-  return <Setup initialUnits={search.get("units")} initialN={search.get("n")} />;
+  return <Setup initialUnits={search.get("units")} initialN={search.get("n")} initialMix={search.get("mix")} />;
 }
 
 // ---------------------------------------------------------------- setup
 
 const LENGTHS = [10, 20, 30, 60];
 
-function Setup({ initialUnits, initialN }: { initialUnits: string | null; initialN: string | null }) {
-  const [units, setUnits] = useState<UnitId[]>(initialUnits ? (initialUnits.split(",") as UnitId[]) : NEXT_EXAM.units);
-  const [n, setN] = useState<number>(initialN ? Number(initialN) : NEXT_EXAM.length);
-  const available = UNITS.filter((u) => units.includes(u.id)).reduce((s, u) => s + u.questions.length, 0);
+const parseUnits = (raw: string | null) => (raw ?? "").split(",").filter((id) => UNIT_BY_ID[id]) as UnitId[];
+const sameSet = (a: UnitId[], b: UnitId[]) => a.length === b.length && a.every((x) => b.includes(x));
+
+function Setup({ initialUnits, initialN, initialMix }: { initialUnits: string | null; initialN: string | null; initialMix: string | null }) {
+  const { exam: selected } = useSelectedExam();
+  const fromUrl = parseUnits(initialUnits);
+  const [units, setUnits] = useState<UnitId[]>(fromUrl.length ? fromUrl : selected.units);
+  const [n, setN] = useState<number>(initialN && Number(initialN) > 0 ? Number(initialN) : selected.length);
+  // the exam whose units are picked exactly (enables its review-mix option and label)
+  const matched = EXAMS.find((e) => sameSet(e.units, units));
+  const [mix, setMix] = useState<boolean>(parseUnits(initialMix).length > 0);
+  const review = matched && mix ? (matched.reviewUnits ?? []) : [];
+  const available = UNITS.filter((u) => units.includes(u.id) || review.includes(u.id)).reduce((s, u) => s + u.questions.length, 0);
   const label =
     units.length === 1
       ? `Unit ${UNIT_BY_ID[units[0]].number} · ${n} Q`
-      : `${units.length === NEXT_EXAM.units.length ? "Cumulative" : "Units " + units.map((u) => u.slice(1)).join(", ")} · ${n} Q`;
+      : `${matched ? `${matched.label} mock${review.length ? " + review" : ""}` : "Units " + units.map((u) => UNIT_BY_ID[u].number).join(", ")} · ${n} Q`;
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,16 +107,27 @@ function Setup({ initialUnits, initialN }: { initialUnits: string | null; initia
                   )}
                 >
                   {l}
-                  {l === NEXT_EXAM.length && <span className="font-normal text-xs text-muted-foreground"> · real length</span>}
+                  {l === (matched ?? selected).length && <span className="font-normal text-xs text-muted-foreground"> · real length</span>}
                 </button>
               ))}
             </div>
             {available < n && <p className="text-sm text-muted-foreground mt-2">Only {available} questions in these units — the exam will use all of them.</p>}
           </div>
+          {matched?.reviewUnits && (
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" className="mt-1 w-4 h-4 accent-[var(--soc-accent)]" checked={mix} onChange={(e) => setMix(e.target.checked)} />
+              <span>
+                <span className="font-semibold">
+                  Mix in units {UNIT_BY_ID[matched.reviewUnits[0]].number}–{UNIT_BY_ID[matched.reviewUnits[matched.reviewUnits.length - 1]].number} review
+                </span>
+                <span className="text-sm text-muted-foreground"> — about {Math.round(REVIEW_SHARE * n)} of the {n} questions</span>
+              </span>
+            </label>
+          )}
           <Button
             size="lg"
             className="w-full gap-2 bg-[var(--soc-accent)] hover:opacity-90 text-white"
-            onClick={() => startExam(buildExam(units, n, label))}
+            onClick={() => startExam(buildExam(units, n, label, review))}
           >
             <Play className="w-5 h-5" /> Start: {label}
           </Button>
@@ -329,7 +350,7 @@ function Results({ exam }: { exam: ExamSession }) {
                 <Shuffle className="w-4 h-4" /> Drill my misses
               </Button>
             </Link>
-            <Link href={`/soc105/exam?units=${exam.unitIds.join(",")}&n=${total}`}>
+            <Link href={`/soc105/exam?units=${exam.unitIds.join(",")}&n=${total}${exam.reviewUnitIds?.length ? `&mix=${exam.reviewUnitIds.join(",")}` : ""}`}>
               <Button variant="outline" className="gap-2">
                 <Play className="w-4 h-4" /> Another exam
               </Button>

@@ -4,13 +4,14 @@
 
 import { useState } from "react";
 import { Link } from "wouter";
-import { BookOpen, CalendarClock, Crosshair, Layers, Play, RotateCcw, Scale, Shuffle, Sparkles, XCircle } from "lucide-react";
+import { BookOpen, CalendarClock, Copy, Crosshair, Layers, Play, RotateCcw, Scale, Shuffle, Sparkles, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ALL_QUESTIONS, NEXT_EXAM, UNITS } from "@/components/soc105/units";
-import { examScore, missedQuestions, resetProgress, tally, useSocStore } from "@/components/soc105/store";
+import { ALL_QUESTIONS, EXAMS, REVIEW_SHARE, UNITS, UNIT_BY_ID } from "@/components/soc105/units";
+import { examScore, missedQuestions, resetProgress, setExamPrefs, tally, useSelectedExam, useSocStore } from "@/components/soc105/store";
 import { Pill, ProgressBar, SKILL_COLOR, SocHeader } from "@/components/soc105/ui";
 import type { Skill } from "@/components/soc105/types";
+import { cn } from "@/lib/utils";
 
 function daysUntil(iso: string) {
   const [y, m, d] = iso.split("-").map(Number);
@@ -47,11 +48,18 @@ const SKILLS: { skill: Skill; title: string; he: string; train: string; mode: st
 export default function SOC105Hub() {
   const store = useSocStore();
   const [confirmReset, setConfirmReset] = useState(false);
-  const days = daysUntil(NEXT_EXAM.date);
-  const examPool = ALL_QUESTIONS.filter((q) => NEXT_EXAM.units.includes(q.unitId));
+  const { exam, mixReview, reviewUnits, scopeUnits } = useSelectedExam();
+  const days = exam.date ? daysUntil(exam.date) : null;
+  // mastery counts the exam's own units; drills and misses follow the current scope
+  const examPool = ALL_QUESTIONS.filter((q) => exam.units.includes(q.unitId));
+  const scopePool = ALL_QUESTIONS.filter((q) => scopeUnits.includes(q.unitId));
   const overall = tally(examPool, store.items);
-  const misses = missedQuestions(ALL_QUESTIONS, store.items).length;
-  const unitRange = NEXT_EXAM.units.map((u) => u.slice(1)).join(", ");
+  const misses = missedQuestions(scopePool, store.items).length;
+  const unitRange = exam.units.map((u) => UNIT_BY_ID[u].number).join(", ");
+  const reviewNums = (exam.reviewUnits ?? []).map((u) => UNIT_BY_ID[u].number);
+  const reviewRange = reviewNums.length > 1 ? `${reviewNums[0]}–${reviewNums[reviewNums.length - 1]}` : reviewNums.join("");
+  const scopeParam = `units=${scopeUnits.join(",")}`;
+  const mockHref = `/soc105/exam?units=${exam.units.join(",")}&n=${exam.length}${mixReview ? `&mix=${reviewUnits.join(",")}` : ""}`;
 
   const drillModes = [
     { mode: "mixed", label: "Mixed drill", desc: "Everything, misses come back sooner", icon: Shuffle, color: "var(--soc-accent)" },
@@ -68,16 +76,36 @@ export default function SOC105Hub() {
       <SocHeader title="SOC 105 · Intro to Sociology" back="/" backLabel="Home" />
 
       <main className="container max-w-5xl py-8 space-y-12">
-        {/* Next exam */}
+        {/* Exam switcher + selected exam */}
         <section>
+          <div className="flex gap-1 rounded-xl border border-border p-1 mb-3 w-full sm:w-fit" role="tablist" aria-label="Exam">
+            {EXAMS.map((e) => {
+              const on = e.id === exam.id;
+              return (
+                <button
+                  key={e.id}
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => setExamPrefs({ examId: e.id })}
+                  className={cn(
+                    "flex-1 sm:flex-none rounded-lg px-4 py-2 text-left transition-colors",
+                    on ? "bg-[var(--soc-accent)] text-white" : "text-muted-foreground hover:bg-muted",
+                  )}
+                >
+                  <div className="font-bold leading-tight">{e.label}</div>
+                  <div className={cn("text-xs", on ? "text-white/85" : "")}>Units {e.units.map((u) => UNIT_BY_ID[u].number).join(", ")}</div>
+                </button>
+              );
+            })}
+          </div>
           <Card className="p-5 sm:p-7 border-l-4" style={{ borderLeftColor: "var(--soc-accent)" }}>
             <div className="flex flex-wrap items-start justify-between gap-5">
               <div>
                 <div className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                  {NEXT_EXAM.label} · units {unitRange} · {NEXT_EXAM.length} MC & T/F · in class
+                  {exam.label} · units {unitRange} · {exam.length} MC & T/F · in class
                 </div>
                 <div className="text-3xl sm:text-4xl font-bold mt-1">
-                  {days > 1 ? `${days} days left` : days === 1 ? "Tomorrow" : days === 0 ? "Today" : "Done"}
+                  {days === null ? "Date not set yet" : days > 1 ? `${days} days left` : days === 1 ? "Tomorrow" : days === 0 ? "Today" : "Done"}
                 </div>
                 <div className="mt-3 max-w-md">
                   <div className="flex justify-between text-sm text-muted-foreground mb-1">
@@ -98,19 +126,42 @@ export default function SOC105Hub() {
                     </Button>
                   </Link>
                 ) : (
-                  <Link href={`/soc105/exam?units=${NEXT_EXAM.units.join(",")}&n=${NEXT_EXAM.length}`}>
+                  <Link href={mockHref}>
                     <Button size="lg" className="w-full gap-2 bg-[var(--soc-accent)] hover:opacity-90 text-white">
-                      <Play className="w-5 h-5" /> Full {NEXT_EXAM.length}-question mock
+                      <Play className="w-5 h-5" /> Full {exam.length}-question mock
                     </Button>
                   </Link>
                 )}
-                <Link href="/soc105/drill">
+                <Link href={`/soc105/drill?${scopeParam}`}>
                   <Button size="lg" variant="outline" className="w-full gap-2">
                     <Shuffle className="w-5 h-5" /> Drill
                   </Button>
                 </Link>
+                <Link href={`/soc105/cards?${scopeParam}`}>
+                  <Button size="lg" variant="outline" className="w-full gap-2">
+                    <Copy className="w-5 h-5" /> Flashcards
+                  </Button>
+                </Link>
               </div>
             </div>
+            {exam.reviewUnits && (
+              <label className="mt-5 pt-4 border-t border-border flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="mt-1 w-4 h-4 accent-[var(--soc-accent)]"
+                  checked={mixReview}
+                  onChange={(e) => setExamPrefs({ mixReview: e.target.checked })}
+                />
+                <span className="text-[15px]">
+                  <strong>Mix in units {reviewRange} review</strong>
+                  <span className="text-muted-foreground">
+                    {" "}
+                    — {Math.round(REVIEW_SHARE * 100)}% of the mock, plus drills, flashcards, and misses. Off by default: there’s no
+                    sample of this exam to show it’s cumulative, but later units build on earlier concepts.
+                  </span>
+                </span>
+              </label>
+            )}
           </Card>
         </section>
 
@@ -126,7 +177,7 @@ export default function SOC105Hub() {
               const pool = examPool.filter((q) => q.skill === s.skill);
               const t = tally(pool, store.items);
               return (
-                <Link key={s.skill} href={`/soc105/drill?mode=${s.mode}`}>
+                <Link key={s.skill} href={`/soc105/drill?mode=${s.mode}&${scopeParam}`}>
                   <Card className="p-5 h-full cursor-pointer hover:shadow-md transition-shadow border-t-4" style={{ borderTopColor: SKILL_COLOR[s.skill] }}>
                     <h3 className="text-lg font-bold" style={{ color: SKILL_COLOR[s.skill] }}>
                       {s.title}
@@ -160,10 +211,14 @@ export default function SOC105Hub() {
 
         {/* Drills */}
         <section>
-          <h2 className="text-2xl font-bold mb-4">Drills</h2>
+          <h2 className="text-2xl font-bold mb-1">Drills</h2>
+          <p className="text-muted-foreground mb-4">
+            Scoped to {exam.label}
+            {mixReview ? ` plus units ${reviewRange} review` : ""}. You can change units inside any drill.
+          </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {drillModes.map(({ mode, label, desc, icon: Icon, color }) => (
-              <Link key={mode} href={`/soc105/drill?mode=${mode}`}>
+              <Link key={mode} href={`/soc105/drill?mode=${mode}&${scopeParam}`}>
                 <Card className="p-4 h-full cursor-pointer hover:shadow-md transition-shadow flex gap-3 items-start">
                   <span className="rounded-lg p-2 shrink-0" style={{ color, backgroundColor: `color-mix(in oklab, ${color} 12%, transparent)` }}>
                     <Icon className="w-5 h-5" />
@@ -180,15 +235,18 @@ export default function SOC105Hub() {
 
         {/* Units */}
         <section>
-          <h2 className="text-2xl font-bold mb-4">Units</h2>
+          <h2 className="text-2xl font-bold mb-4">{exam.label} units</h2>
           <div className="space-y-3">
-            {UNITS.map((u) => {
+            {UNITS.filter((u) => scopeUnits.includes(u.id)).map((u) => {
               const t = tally(ALL_QUESTIONS.filter((q) => q.unitId === u.id), store.items);
               return (
                 <Card key={u.id} className="p-4 sm:p-5">
                   <div className="flex flex-wrap items-center gap-4 justify-between">
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm text-muted-foreground font-semibold">Unit {u.number}</div>
+                      <div className="text-sm text-muted-foreground font-semibold">
+                        Unit {u.number}
+                        {!exam.units.includes(u.id) && " · review"}
+                      </div>
                       <h3 className="text-xl font-bold">{u.title}</h3>
                       <p className="text-[15px] text-muted-foreground">{u.subtitle}</p>
                       <div className="mt-2 max-w-sm">
@@ -207,6 +265,11 @@ export default function SOC105Hub() {
                       <Link href={`/soc105/drill?units=${u.id}`}>
                         <Button variant="outline" className="gap-2">
                           <Shuffle className="w-4 h-4" /> Drill
+                        </Button>
+                      </Link>
+                      <Link href={`/soc105/cards?units=${u.id}`}>
+                        <Button variant="outline" className="gap-2">
+                          <Copy className="w-4 h-4" /> Flashcards
                         </Button>
                       </Link>
                       <Link href={`/soc105/exam?units=${u.id}&n=20`}>
